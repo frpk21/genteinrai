@@ -659,11 +659,11 @@ i:before {
   height: 100%;
 }
 
-.page_lines .line {
+.page_lines .line {    /* lineneas verticales */
   position: absolute;
   width: 1px;
   height: 50000px;
-  background: #8f8f8f;
+  background: #d1d0d0b1;
 }
 
 .page_lines .line + .line {
@@ -724,7 +724,7 @@ i:before {
 
 .header_menu_area .navbar.navbar-expand-lg .nav.navbar-nav li a {
   font-family: "Heebo", sans-serif;
-  color: #fff;
+  color: rgb(236, 143, 67);
   font-size: 14px;
   -webkit-transition: color 400ms linear 0s;
   -o-transition: color 400ms linear 0s;
