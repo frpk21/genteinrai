@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include 'generales/header.html' %}
+
+  <body class="overflow-hidden-x">
+    <main class="main min-vh-100" id="top">
+      <div class="preloader" id="preloader">
+        <div class="loader">
+          <div class="line-scale-pulse-out-rapid">
+            <div> </div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div> </div>
+          </div>
+        </div>
+      </div>
+      <section class="py-0">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-6 px-0">
+              <div class="sticky-top vh-lg-100 py-9">
+                <div class="bg-holder" style="background-image:url(/static/base/assets/img/signin.jpg);" data-zanim-trigger="scroll" data-zanim-lg='{"animation":"zoom-out-slide-right","delay":0.4}'>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 py-6">
+              <div class="row h-100 align-items-center justify-content-center">
+                <div class="col-sm-8 col-md-6 col-lg-10 col-xl-8" data-zanim-xs='{"delay":0.5,"animation":"slide-right"}' data-zanim-trigger="scroll">
+                  <h3 class="display-4 fs-2">rsNews</h3>
+                  <form class="form" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <input class="form-control bg-light" name="username" type="text" placeholder="usuario" id="id_username">
+                    </div>
+                    <div class="mb-0">
+                      <input class="form-control bg-light" name="password" type="password" placeholder="Password" id="id_password">
+                    </div>
+                    <div class="mb-3 d-grid">
+                      <button class="btn btn-dark mt-3" type="submit" >Login</button>
+                    </div>
+                    <small class="text-danger">
+                      {% if form.errors %}
+                        {% for field in form %}
+                          {% if field.errors %}
+                            {% for error in field.errors %}
+                              {{ error|escape }}
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+                        {% if form.non_field_errors %}
+                          {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                          {% endfor %}
+                        {% endif %}
+                      {% endif %}
+                    </small>
+                    <div class="mb-3 w-100 position-relative text-center mt-4">
+                      <hr class="text-300" />
+                      <div class="absolute-centered px-3 font-sans-serif fs--1 text-500">o registrese</div>
+                    </div>
+                    <div class="mb-0">
+                      <div class="row gx-2">
+                        <div class="col-6 d-grid"><a class="btn btn-outline-danger btn-sm mt-2" href="#!"><span class="fab fa-google-plus-g me-2" data-fa-transform="grow-8"></span> google</a></div>
+                        <div class="col-6 d-grid"><a class="btn btn-outline-primary btn-sm mt-2" href="#!"><span class="fab fa-facebook me-2" data-fa-transform="grow-8"></span> facebook</a></div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer bg-black text-600 py-4 font-sans-serif text-center overflow-hidden" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+      <div class="container">
+          <div class="row align-items-center">
+              <div class="col-lg-4 order-lg-2 position-relative">
+                  <a class="indicator indicator-up" href="#top">
+                      <span class="indicator-arrow indicator-arrow-one" data-zanim-xs='{"from":{"opacity":0,"y":15},"to":{"opacity":1,"y":-5,"scale":1},"ease":"Back.easeOut","duration":0.4,"delay":0.9}'></span>
+                      <span class="indicator-arrow indicator-arrow-two" data-zanim-xs='{"from":{"opacity":0,"y":15},"to":{"opacity":1,"y":-5,"scale":1},"ease":"Back.easeOut","duration":0.4,"delay":1.05}'></span>
+                  </a>
+              </div>
+                  <div class="col-lg-4 text-lg-start mt-4 mt-lg-0">
+                      <p class="fs--1 text-uppercase ls fw-bold mb-0">Copyright &copy; <script>document.write(new Date().getFullYear())</script> INRAI</p>
+                  </div>
+              <div class="col-lg-4 text-lg-end order-lg-2 mt-2 mt-lg-0">
+                  <p class="fs--1 text-uppercase ls fw-bold mb-0">Hecho en Colombia <span class="text-danger fas fa-heart mx-1"></span>por <a class="text-600" href="http://inrai.net/">INRAI</a></p>
+              </div>
+          </div>
+      </div>
+    </footer>
+
+    <div class="overflow-hidden">
+      <div class="modal fade fade-in" id="count" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xs mx-auto" role="document">
+          <div class="modal-content bg-black">
+            <div class="modal-body text-center p-0">
+              <button class="btn-close text-white position-absolute top-0 end-0 times-icon mt-2 me-2 p-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+              <ul class="list-unstyled my-0 py-4 font-sans-serif">
+                <li><a class="text-white fw-bold pt-1 d-block" href="{% url 'generales:logout' %}">Cerrar sesi&oacute;n</a></li>
+                <li><a class="pt-1 d-block text-500" href="#!">Mensaje al Administrador</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/base/vendors/popper/popper.min.js"></script>
+    <script src="/static/base/vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/base/vendors/anchorjs/anchor.min.js"></script>
+    <script src="/static/base/vendors/is/is.min.js"></script>
+    <script src="/static/base/vendors/swiper/swiper-bundle.min.js"></script>
+    <script src="/static/base/vendors/rellax/rellax.min.js"> </script>
+    <script src="/static/base/vendors/fontawesome/all.min.js"></script>
+    <script src="/static/base/vendors/lodash/lodash.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="/static/base/vendors/imagesloaded/imagesloaded.pkgd.js"></script>
+    <script src="/static/base/vendors/gsap/gsap.js"></script>
+    <script src="/static/base/vendors/gsap/customEase.js"></script>
+    <script src="/static/base/vendors/gsap/drawSVGPlugin.js"></script>
+    <script src="/static/base/assets/js/theme.js"></script>
+  </body>
+
+</html>
+
