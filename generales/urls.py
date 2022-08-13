@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from generales.views import HomeView, HomeSinPrivilegios, PoliticaView
+from generales.views import Home, HomeView, HomeSinPrivilegios, PoliticaView
 
 from django.contrib.auth import views as auth_views
  
@@ -12,7 +12,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     #url(r'^$', HomeView, name='home'),
-    path('',HomeView, name='home'),
+    #path('',HomeView, name='home'),
+    path('',Home.as_view(), name='home'),
     path('login/', auth_views.LoginView.as_view(template_name='generales/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='generales/login.html'), name='logout'),
     path('loginunlock/', auth_views.LoginView.as_view(template_name='generales/lock.html'), name='loginunlock'),

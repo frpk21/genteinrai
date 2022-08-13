@@ -19,6 +19,7 @@ from generales.forms import MesAnoForm
 from .models import Noticias, Sedes
 from .forms import SuscribirseForm
 from django.db.models import Count
+from django.contrib.auth import authenticate, login
 
 
 class SinPrivilegios(PermissionRequiredMixin):
@@ -29,14 +30,13 @@ class SinPrivilegios(PermissionRequiredMixin):
     def handle_no_permission(self):
         return HttpResponseRedirect(reverse_lazy(self.login_url))
 
-
 class HomePage(generic.View):
     def get(self, request, *args, **kwargs):
         return HttpResponse('Pagina de Inicio')
 
-#class Home(LoginRequiredMixin, generic.TemplateView):
-#    template_name='generales/home.html'
-#    login_url='generales:login'
+class Home(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/home.html'
+    login_url='generales:login'
 
 def HomeView(request):
     template_name = 'generales/home.html'

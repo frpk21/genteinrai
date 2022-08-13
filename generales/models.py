@@ -45,6 +45,31 @@ class Profile(models.Model):
     def save(self):
         super(Profile, self).save()
 
+class Cargos(models.Model):
+    nombre = models.CharField('Nombre Cargo', default='', blank=True, null=True, max_length=100)
+ 
+    def save(self):
+        super(Cargos, self).save()
+
+class Funcionarios(models.Model):
+    nombre1 = models.CharField('Primer nombre', default='', blank=False, null=False, max_length=50)
+    nombre2 = models.CharField('Segundo nombre', default='', blank=True, null=True, max_length=50)
+    apellido1 = models.CharField('Primer apellido', default='', blank=False, null=False, max_length=50)
+    apellido2 = models.CharField('Segundo apellido', default='', blank=True, null=True, max_length=50)
+    fecha_nacimiento = models.DateField('Fecha de nacimiento', blank=False, null=False)
+    foto = models.FileField("Archivo con Foto del Funcionario", upload_to="fotos/", blank=False, null=False, default="")
+    sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=0, null=False, blank=False)
+    direccion = models.CharField('Dirección Residencia', default='', blank=True, null=True, max_length=100)
+    cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, default=0, null=False, blank=False)
+    celular = models.CharField('Número de celular', default='', blank=True, null=True, max_length=60)
+    email = models.CharField('E-Mail', blank=True, null=True, max_length=200, default="" )
+ 
+    def save(self):
+        self.nombre1 = self.nombre1.upper()
+        self.nombre2 = self.nombre2.upper()
+        self.apellido1 = self.apellido1.upper()
+        self.apellido2 = self.apellido2.upper()
+        super(Funcionarios, self).save()
 
 class Noticias(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
@@ -53,6 +78,7 @@ class Noticias(ClaseModelo):
     archivo_audio = models.FileField("Archivo Audio", upload_to="audio/", blank=True, null=True, default='')
     urlvideo = models.CharField('URL Youtube', blank=True, null=True, default='', max_length=200)
     ultima_hora = models.BooleanField()
+    evento = models.BooleanField(default='False')
     fecha_inicio_publicacion = models.DateField('Fecha de inicio de publicación', blank=True, null=True, default=datetime.now)
     fecha_final_publicacion = models.DateField('Fecha de finalización de publicación', blank=True, null=True, default=datetime.now)
     CHOICES = ((0,'Principal'),(1,'Destacado 1'),(2,'Destacado 2'),(3,'Destacado 3'),(4,'General 4'))
@@ -64,7 +90,7 @@ class Noticias(ClaseModelo):
     html = models.TextField(max_length=10000, default="", blank=True, null=True)
     pdf = models.FileField("Archivo PDF", upload_to="pdf/", blank=True, null=True, default='')
     slug = models.SlugField(blank=True,null=True, max_length=250)
-    CHOICES1 = ((0,'En aprobación'),(1,'Devuelto para revisión'),(2,'Rechazado'),(3,'Aprobado'),(4,'Publicado'))
+    sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=0, null=False, blank=False)
 
     def __str__(self):
         return '{}-{}'.format(self.titulo, self.autor.profile.sede.nombre_sede)

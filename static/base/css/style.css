@@ -183,7 +183,7 @@ i:before {
 }
 
 .main_title h2 {
-  color: #fff;
+  color: #263a4f;
   font-family: "Heebo", sans-serif;
   font-size: 42px;
   font-weight: bold;
@@ -1695,7 +1695,7 @@ i:before {
 
 .spec_item h4 {
   font-size: 30px;
-  color: #fff;
+  color: #263a4f;
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 15px;
@@ -1790,7 +1790,7 @@ i:before {
 }
 
 .view_btn:hover {
-  color: #fff;
+  color: #f87400;
 }
 
 .view_btn.white:hover {
@@ -2029,7 +2029,7 @@ i:before {
   font-size: 12px;
   font-family: "Heebo", sans-serif;
   font-weight: bold;
-  color: #fff;
+  color: #263a4f;
   text-transform: uppercase;
   -webkit-transition: all 400ms linear 0s;
   -o-transition: all 400ms linear 0s;
@@ -2042,7 +2042,7 @@ i:before {
 }
 
 .press_img_item .date a:first-child:hover {
-  color: #fff;
+  color: rgb(122, 95, 95);
 }
 
 .press_img_item .date a:hover {
@@ -2059,7 +2059,7 @@ i:before {
 .press_img_item h4 {
   font-size: 24px;
   line-height: 30px;
-  color: #fff;
+  color: #263a4f;
   font-family: "Heebo", sans-serif;
   font-weight: bold;
   margin-bottom: 0px;
@@ -2086,7 +2086,7 @@ i:before {
   font-size: 12px;
   font-family: "Heebo", sans-serif;
   font-weight: bold;
-  color: #fff;
+  color: #263a4f;
   text-transform: uppercase;
   -webkit-transition: all 400ms linear 0s;
   -o-transition: all 400ms linear 0s;
@@ -2098,7 +2098,7 @@ i:before {
 }
 
 .press_item .date a:first-child:hover {
-  color: #fff;
+  color: #263a4f;
 }
 
 .press_item .date a:hover {
@@ -2115,7 +2115,7 @@ i:before {
 .press_item h4 {
   font-size: 24px;
   line-height: 30px;
-  color: #fff;
+  color: #263a4f;
   font-family: "Heebo", sans-serif;
   font-weight: bold;
   margin-bottom: 0px;
@@ -2140,7 +2140,7 @@ i:before {
 }
 
 .white_cl .press_img_item .date a:first-child {
-  color: #8d9aa8;
+  color: #f87400;
 }
 
 .white_cl .press_img_item .date a:first-child:hover {
