@@ -45,11 +45,17 @@ class Profile(models.Model):
     def save(self):
         super(Profile, self).save()
 
+    class Meta:
+        verbose_name_plural = "Perfiles de Usuarios"
+
 class Cargos(models.Model):
     nombre = models.CharField('Nombre Cargo', default='', blank=True, null=True, max_length=100)
  
     def save(self):
         super(Cargos, self).save()
+
+    class Meta:
+        verbose_name_plural = "Cargos de Funcionarios"
 
 class Funcionarios(models.Model):
     nombre1 = models.CharField('Primer nombre', default='', blank=False, null=False, max_length=50)
