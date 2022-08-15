@@ -3,7 +3,7 @@ from .models import Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir
 from django.contrib.admin.widgets import AutocompleteSelect
 
 class SedesAdmin(admin.ModelAdmin):
-    list_display = ('nombre_sede', )
+    list_display = ('nombre_sede','foto','director','ciudad', )
     ordering = ('nombre_sede', )
 
     class Meta:

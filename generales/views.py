@@ -37,13 +37,52 @@ class HomePage(generic.View):
 class Home(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/home.html'
     login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year
+            )
+        )
+
+class SedesView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/sedes.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                sedes=sedes,
+                hoy=date.today(),
+                anor=date.today().year
+            )
+        )
+
+class DetalleSedeView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/detalle_sede.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        sede = Sedes.objects.get(id=kwargs["pk"])
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                sede=sede,
+                hoy=date.today(),
+                anor=date.today().year
+            )
+        )
 
 def HomeView(request):
     template_name = 'generales/home.html'
     hoy = date.today()
     total_mes = Noticias.objects.filter(modificado__date__month=hoy.month).count()
-
-
     titulares1 = Noticias.objects.filter(orden_destacado=0).order_by('-id')[:2]
     titulares2 = Noticias.objects.filter(orden_destacado=0).order_by('-id')[:4]
     titulares3 = Noticias.objects.filter(orden_destacado=0).order_by('-id')[:4]

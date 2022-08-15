@@ -1,0 +1,236 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+    <section >
+        <div id="home_full_slider" class="rev_slider fullscreenbanner" data-version="5.3.1.6">
+            <ul>
+                <li data-index="rs-2946" data-transition="slotzoom-horizontal" data-slotamount="5" data-masterspeed="1000" data-fsmasterspeed="1000">
+                    {% if sede.foto|length > 0 %}
+                        <img src="{{sede.foto.url}}"  alt="" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-bgparallax="10" data-no-retina>
+                    {% else %}
+                        <img src="/static/base/img/headphones-on-sound-mixer-in-professional-radio-st-2021-08-27-09-30-41-utc.jpg"  alt="" data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" class="rev-slidebg" data-bgparallax="10" data-no-retina>
+                    {% endif %}
+                    <div class="slider_text_box">
+                        <div class="tp-caption tp-resizeme text_1" 
+                            data-x="['left']" data-hoffset="['-5','0','15','15','15']"  
+                            data-y="['bottom']" data-voffset="['-10','0','0','0','0']"
+                            data-textAlign="['left']"
+                            data-fontsize="['100', '100','70','70','50']"
+                            data-lineheight="['100','100', '70','70','50']"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[155%];x:0;z:0;rX:0deg;rY:0deg;rZ:0deg;sX:1;sY:1;skX:0;skY:0;s:1000;e:Power2.easeInOut;" 
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" 
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;" 
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" 
+                            data-start="1500" 
+                            data-splitin="none" 
+                            data-splitout="none" 
+                            data-responsive_offset="on" 
+                            data-elementdelay="0.05" style="font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; color: white">
+                            {{sede.nombre_sede}}<br>
+                        </div>
+                        <div class="tp-caption tp-shape tp-shapewrapper tp-resizeme line_1" 
+                            data-x="['left']" data-hoffset="['0']" 
+                            data-y="['top','top','top','top']" data-voffset="['-50']" 
+                            data-width="2"
+                            data-height="5000px"
+                            data-whitespace="nowrap"
+                            data-type="shape" 
+                            data-responsive_offset="on" 
+                            data-frames='[{"from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;","speed":1000,"to":"o:1;","delay":500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"to":"opacity:0;","ease":"nothing"}]'
+                            data-textAlign="['left','left','left','left']"
+                            data-paddingtop="[0,0,0,0]"
+                            data-paddingright="[0,0,0,0]"
+                            data-paddingbottom="[0,0,0,0]"
+                            data-paddingleft="[0,0,0,0]"
+                            style="background-color:rgba(255, 255, 255, .10);"> </div>
+                        <div class="tp-caption tp-shape tp-shapewrapper tp-resizeme line_2" 
+                            data-x="['left']" data-hoffset="['397']" 
+                            data-y="['top','top','top','top']" data-voffset="['-50']" 
+                            data-width="2"
+                            data-height="5000px"
+                            data-whitespace="nowrap"
+                            data-type="shape" 
+                            data-responsive_offset="on" 
+                            data-frames='[{"from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;","speed":1000,"to":"o:1;","delay":500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"to":"opacity:0;","ease":"nothing"}]'
+                            data-textAlign="['left','left','left','left']"
+                            data-paddingtop="[0,0,0,0]"
+                            data-paddingright="[0,0,0,0]"
+                            data-paddingbottom="[0,0,0,0]"
+                            data-paddingleft="[0,0,0,0]"
+                            style="background-color:rgba(255, 255, 255, .10);"> </div>
+                        <div class="tp-caption tp-shape tp-shapewrapper tp-resizeme line_3" 
+                            data-x="['left']" data-hoffset="['795']" 
+                            data-y="['top','top','top','top']" data-voffset="['-50']" 
+                            data-width="2"
+                            data-height="5000px"
+                            data-whitespace="nowrap"
+                            data-type="shape" 
+                            data-responsive_offset="on" 
+                            data-frames='[{"from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;","speed":1000,"to":"o:1;","delay":500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"to":"opacity:0;","ease":"nothing"}]'
+                            data-textAlign="['left','left','left','left']"
+                            data-paddingtop="[0,0,0,0]"
+                            data-paddingright="[0,0,0,0]"
+                            data-paddingbottom="[0,0,0,0]"
+                            data-paddingleft="[0,0,0,0]"
+                            style="background-color:rgba(255, 255, 255, .10);"> </div>
+                        <div class="tp-caption tp-shape tp-shapewrapper tp-resizeme line_4" 
+                            data-x="['left']" data-hoffset="['1168']" 
+                            data-y="['top','top','top','top']" data-voffset="['-50']" 
+                            data-width="2"
+                            data-height="5000px"
+                            data-whitespace="nowrap"
+                            data-type="shape" 
+                            data-responsive_offset="on" 
+                            data-frames='[{"from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;","speed":1000,"to":"o:1;","delay":500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"to":"opacity:0;","ease":"nothing"}]'
+                            data-textAlign="['left','left','left','left']"
+                            data-paddingtop="[0,0,0,0]"
+                            data-paddingright="[0,0,0,0]"
+                            data-paddingbottom="[0,0,0,0]"
+                            data-paddingleft="[0,0,0,0]"
+                            style="background-color:rgba(255, 255, 255, .10);"> </div>
+                        <div class="tp-caption tp-shape tp-shapewrapper tp-resizeme text_2" 
+                            data-x="['left']" data-hoffset="['0','0','15','15','15']" 
+                            data-y="['top','top','top','top']" data-voffset="['325','285','160','160','110']" 
+                            data-width="86"
+                            data-height="6"
+                            data-whitespace="nowrap"
+                            data-type="shape" 
+                            data-responsive_offset="on" 
+                            data-frames='[{"from":"x:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;","speed":1000,"to":"o:1;","delay":500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":300,"to":"opacity:0;","ease":"nothing"}]'
+                            data-textAlign="['left','left','left','left']"
+                            data-paddingtop="[0,0,0,0]"
+                            data-paddingright="[0,0,0,0]"
+                            data-paddingbottom="[0,0,0,0]"
+                            data-paddingleft="[0,0,0,0]"
+                            style="background-color:#cee002;"> </div>
+                        <div class="tp-caption tp-resizeme count" 
+                            data-x="['left']" data-hoffset="['0','0','15','15','15']"  
+                            data-y="['top']" data-voffset="['355','330','200','200','150']"
+                            data-textAlign="['left']"
+                            data-fontsize="['60', '60','60','60']"
+                            data-lineheight="['60','60', '60','60']"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="y:[155%];x:0;z:0;rX:0deg;rY:0deg;rZ:0deg;sX:1;sY:1;skX:0;skY:0;s:1000;e:Power2.easeInOut;" 
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" 
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;" 
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" 
+                            data-start="1000" 
+                            data-splitin="none" 
+                            data-splitout="none" 
+                            data-responsive_offset="on" 
+                            data-elementdelay="0.05">
+                            </div>
+                        <div class="tp-caption tp-resizeme text_3" 
+                            data-x="['left']" data-hoffset="['0','0','15','15','15']"  
+                            data-y="['bottom']" data-voffset="['240','240','240','240','170']"
+                            data-textAlign="['left']"
+                            data-fontsize="['18, 18, 20,22']"
+                            data-lineheight="['32','32', '32','32']"
+                            data-height="none"
+                            data-whitespace="nowrap"
+                            data-transform_idle="o:1;"
+                            data-transform_in="x:[-155%];z:0;rX:0deg;rY:0deg;rZ:0deg;sX:1;sY:1;skX:0;skY:0;s:2000;e:Power2.easeInOut;" 
+                            data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" 
+                            data-mask_in="x:0px;y:0px;s:inherit;e:inherit;" 
+                            data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" 
+                            data-start="1500" 
+                            data-splitin="chars" 
+                            data-splitout="none" 
+                            data-responsive_offset="on" 
+                            data-elementdelay="0.05" style="letter-spacing:0.1em; text-transform:uppercase; color:white;">Sede  -  {{sede.ciudad}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="page_lines white_br">
+            <div class="container">
+                <div class="row m0">
+                    <div class="col-lg-4">
+                        <div class="line"></div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="line"></div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="project_details_area">
+        <div class="container">
+            <div class="back_btn">
+                <a href="#"><i class="ion-grid"></i> General</a>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-sm-6">
+                    <div class="pd_item">
+                        <h5>Ubicaci&oacute;n: <span>{{sede.ciudad}} | {{sede.direccion}}</span></h5>
+                        <h5>Director: <span>{{sede.director}} </span></h5>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <div class="pd_item">
+                        <h5>Fundado en: <span>{{sede.ano_fundacion}}</span></h5>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6">
+                    <div class="pd_item">
+                        {% if item.logo|length > 0 %}
+                            <img class="img-fluid" src="{{sede.logo.url}}" height="570px" alt="">
+                        {% else %}
+                            <img class="img-fluid" src="/static/base/img/latest-project/l-project-1.jpg" alt="">
+                        {% endif %}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="project_villa_area">
+        <div class="container">
+            <div class="villa_text">
+                <h2>{{sede.nombre_sede}}</h2>
+                <p>{{sede.descripcion|safe}}</p>
+            </div>
+            <div class="villa_slider owl-carousel">
+                <div class="item">
+                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                </div>
+                <div class="item">
+                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                </div>
+                <div class="item">
+                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                </div>
+            </div>
+            <div class="link_btn">
+                <a href="#">Vamos a trabajar juntos !</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="prev_next_area">
+        <div class="prev">
+            <a href="#">Ant</a>
+        </div>
+        <div class="next">
+            <a href="#">Sig</a>
+        </div>
+    </section>
+
+{% endblock contenido %}

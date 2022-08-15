@@ -1,0 +1,47 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+    <section class="breadcrumb_link">
+        <div class="container">
+            <a href="{% url 'generales:home' %}">Mi Empresa</a>
+            <a class="active" href="{% url 'generales:sedes' %}">sedes</a>
+        </div>
+    </section>
+
+    <section class="our_projects_area">
+        <div class="container">
+            <div class="projects_tt">
+                <div class="float-md-left">
+                    <div class="main_title white">
+                        <h2>nuestras sedes</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="projects_inner">
+            {% for item in sedes %}
+                <div class="projects_column arc urban">
+                    <div class="projects_item">
+                        {% if item.foto|length > 0 %}
+                            <img class="img-fluid" src="{{item.foto.url}}" height="570px" alt="">
+                        {% else %}
+                            <img class="img-fluid" src="/static/base/img/latest-project/l-project-1.jpg" alt="">
+                        {% endif %}
+                        <div class="hover">
+                            <a href="{% url 'generales:detalle_sede' item.id %}"><i class="ion-android-arrow-forward"></i></a>
+                            <div class="project_text">
+                                <h5>Sede - {{item.ciudad}}</h5>
+                                <a href="#"><h4>{{item.nombre_sede}}</h4></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+{% endblock contenido %}

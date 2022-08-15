@@ -25,12 +25,21 @@ from generales.models import ClaseModelo
 class Sedes(ClaseModelo):
     sede = models.IntegerField(default=0, null=False, blank=False)
     nombre_sede = models.CharField(blank=False, null=False, max_length=100, default="")
+    foto = models.FileField("Foto Sede (476x570)", upload_to="fotos/", blank=False, null=False, default="")
+    director = models.CharField(blank=True, null=True, max_length=100, default="")
+    ciudad = models.CharField(blank=True, null=True, max_length=50, default="")
+    ano_fundacion = models.IntegerField(default=0, null=True, blank=True)
+    direccion = models.CharField(blank=True, null=True, max_length=100, default="")
+    logo = models.FileField("Logo (476x570)", upload_to="fotos/", blank=False, null=False, default="")
+    descripcion = RichTextField(max_length=15000, blank=True, null=True)
 
     def __str__(self):
         return '{}-{}'.format(self.id, self.nombre_sede)
 
     def save(self):
         self.nombre_sede = self.nombre_sede.upper()
+        self.director = self.director.upper()
+        self.ciudad = self.ciudad.upper()
         super(Sedes, self).save()
 
     class Meta:

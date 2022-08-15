@@ -48,9 +48,7 @@
     <body class="bg_color">
         <div class="layout animsition" style="animation-duration: 1000ms; opacity: 1;">
         	<div id="small-dialog" class="zoom-anim-dialog mfp-hide embed-responsive embed-responsive-16by9">                
-
-                    <iframe width="560" height="300" src="https://castor.streamthatvideo.co/VideoPlayer/videoinrai" style="position: absolute;top: 0;left: 0;bottom: 0;right: 0;width: 100%;height: 100%;" scrolling="no" frameborder="0" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
-          
+                <iframe width="560" height="300" src="https://castor.streamthatvideo.co/VideoPlayer/videoinrai" style="position: absolute;top: 0;left: 0;bottom: 0;right: 0;width: 100%;height: 100%;" scrolling="no" frameborder="0" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
 			</div>
             <header class="header_menu_area ">
 				<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -63,16 +61,17 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="nav navbar-nav">
 							<li class="dropdown submenu active">
-								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Inicio</a>
+								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mi Empresa</a>
 								<ul class="dropdown-menu">
 									<li class="active"><a href="../light/index.html">Nuestra Empresa</a></li>
 									<li><a href="index.html">Principios & Fundamentos</a></li>
+                                    <li><a href="index.html">Himno</a></li>
 									<li><a href="../light/home-fullpage.html">Junta Directiva</a></li>
 									<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 								</ul>
 							</li>
                             <li><a href="about-us.html">Noticias</a></li>
-							<li><a href="about-us.html">Sedes</a></li>
+							<li><a href="{% url 'generales:sedes' %}">Sedes</a></li>
 							<li class="dropdown submenu">
 								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recursos Humanos</a>
 								<ul class="dropdown-menu">
@@ -133,7 +132,7 @@
 						</ul>
 					</li>
                     <li><a href="about-us.html">Noticias</a></li>
-					<li><a href="about-us.html">Sedes</a></li>
+					<li><a href="{% url 'generales:sedes' %}">Sedes</a></li>
 					<li>
 						<a href="index.html">Recursos Humanos <i class="ion-chevron-down"></i></a>
 						<ul class="list">
