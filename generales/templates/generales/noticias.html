@@ -5,6 +5,8 @@
 
 {% block contenido %}
 
+{% load humanize %}
+
     <section class="breadcrumb_link">
         <div class="container">
             <a href="{% url 'generales:home' %}">Mi Empresa</a>
@@ -28,9 +30,9 @@
                                         {% endif %}
                                     </div>
                                     <div class="media-body">
-                                        <a class="tag" href="#">Noticia</a>
-                                        <a href="#"><h4>HPG Australia announces winning design team on One Sydney Park</h4></a>
-                                        <a class="time" href="#">August 19, 2018</a>
+                                        <a class="tag" href="#">{{item.sede.nombre_sede}}</a>
+                                        <a href="#"><h4>{{item.titulo}}</h4></a>
+                                        <a class="time" href="#">{{item.modificado.date}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +52,7 @@
                     <div class="left_sidebar_area">
                         <aside class="l_widget search_wd">
                             <div class="l_wd_title">
-                                <h3>Search</h3>
+                                <h3>Buscar</h3>
                             </div>
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Type & Hit Enter..." aria-label="Recipient's username">
@@ -61,41 +63,28 @@
                                 <h3>Categories</h3>
                             </div>
                             <ul class="list">
-                                <li><a href="#">All <span>25</span></a></li>
-                                <li><a href="#">News <span>12</span></a></li>
-                                <li><a href="#">Event <span>7</span></a></li>
-                                <li><a href="#">Inspiration <span>4</span></a></li>
-                                <li><a href="#">Others <span>2</span></a></li>
+                                <li><a href="#">Todo <span>25</span></a></li>
+                                {% for item in sedes %}
+                                    <li><a href="{% url 'generales:detalle_sede' item.id %}">{{item.sede.nombre_sede}}<span>12</span></a></li>
+                                {% endfor %}
                             </ul>
                         </aside>
                         <aside class="l_widget r_post_wd">
                             <div class="l_wd_title">
-                                <h3>Recent Posts</h3>
+                                <h3>Noticias Recientes</h3>
                             </div>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/blog/recent-post/r-post-1.jpg" alt="">
+                            {% for item in recientes %}
+                                <div class="media">
+                                    <div class="d-flex">
+                                        {% if item.imagen_destacado|length > 0 %}
+                                            <img class="img-fluid" src="{{item.imagen_destacado.url}}" height="55px" alt="">
+                                        {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <a href="#"><h4>{{item.titulo}}</h4></a>
+                                    </div>
                                 </div>
-                                <div class="media-body">
-                                    <a href="#"><h4>Taberner House gains planning permission</h4></a>
-                                </div>
-                            </div>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/blog/recent-post/r-post-2.jpg" alt="">
-                                </div>
-                                <div class="media-body">
-                                    <a href="#"><h4>CTBUH International Conference 2017</h4></a>
-                                </div>
-                            </div>
-                            <div class="media">
-                                <div class="d-flex">
-                                    <img src="img/blog/recent-post/r-post-3.jpg" alt="">
-                                </div>
-                                <div class="media-body">
-                                    <a href="#"><h4>LandAid SleepOut</h4></a>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </aside>
                         <aside class="l_widget tags_wd">
                             <div class="l_wd_title">
