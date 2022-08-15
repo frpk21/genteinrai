@@ -70,7 +70,7 @@
 									<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 								</ul>
 							</li>
-                            <li><a href="about-us.html">Noticias</a></li>
+                            <li><a href="{% url 'generales:noticias' %}">Noticias</a></li>
 							<li><a href="{% url 'generales:sedes' %}">Sedes</a></li>
 							<li class="dropdown submenu">
 								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recursos Humanos</a>
@@ -131,7 +131,7 @@
 							<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 						</ul>
 					</li>
-                    <li><a href="about-us.html">Noticias</a></li>
+                    <li><a href="{% url 'generales:noticias' %}">Noticias</a></li>
 					<li><a href="{% url 'generales:sedes' %}">Sedes</a></li>
 					<li>
 						<a href="index.html">Recursos Humanos <i class="ion-chevron-down"></i></a>

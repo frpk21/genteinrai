@@ -79,6 +79,26 @@ class DetalleSedeView(LoginRequiredMixin, generic.TemplateView):
             )
         )
 
+class NoticiasView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/noticias.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        noticias = Noticias.objects.filter(active=True, modificado__lt=date.today())[:25]
+        recientes = Noticias.objects.filter(active=True, modificado__lge=date.today())[:25]
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                hoy=date.today(),
+                sedes=sedes,
+                noticias=noticias,
+                recientes=recientes,
+                anor=date.today().year
+            )
+        )
+
 def HomeView(request):
     template_name = 'generales/home.html'
     hoy = date.today()
