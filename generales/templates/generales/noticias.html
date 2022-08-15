@@ -63,9 +63,9 @@
                                 <h3>Categories</h3>
                             </div>
                             <ul class="list">
-                                <li><a href="#">Todo <span>25</span></a></li>
+                                <li><a href="#">Todo <span></span></a></li>
                                 {% for item in sedes %}
-                                    <li><a href="{% url 'generales:detalle_sede' item.id %}">{{item.nombre_sede}}<span>12</span></a></li>
+                                    <li><a href="{% url 'generales:detalle_sede' item.id %}">{{item.nombre_sede}}<span></span></a></li>
                                 {% endfor %}
                             </ul>
                         </aside>
