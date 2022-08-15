@@ -39,11 +39,14 @@ class Home(LoginRequiredMixin, generic.TemplateView):
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
         sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
-                anor=date.today().year
+                anor=date.today().year,
+                noticias=noticias,
+                sedes=sedes
             )
         )
 
