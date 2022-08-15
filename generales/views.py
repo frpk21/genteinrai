@@ -85,8 +85,8 @@ class NoticiasView(LoginRequiredMixin, generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
-        noticias = Noticias.objects.filter(active=True, modificado__lt=date.today())[:25]
-        recientes = Noticias.objects.filter(active=True, modificado__lge=date.today())[:25]
+        noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
+        recientes = Noticias.objects.filter(modificado__lge=date.today())[:25]
         self.object = None
 
         return self.render_to_response(
