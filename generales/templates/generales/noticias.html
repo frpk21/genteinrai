@@ -65,7 +65,7 @@
                             <ul class="list">
                                 <li><a href="#">Todo <span>25</span></a></li>
                                 {% for item in sedes %}
-                                    <li><a href="{% url 'generales:detalle_sede' item.id %}">{{item.sede.nombre_sede}}<span>12</span></a></li>
+                                    <li><a href="{% url 'generales:detalle_sede' item.id %}">{{item.nombre_sede}}<span>12</span></a></li>
                                 {% endfor %}
                             </ul>
                         </aside>
