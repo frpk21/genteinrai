@@ -209,13 +209,13 @@
             </div>
             <div class="villa_slider owl-carousel">
                 <div class="item">
-                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                    {% if sede.foto1|length > 0 %}<img src="{{sede.foto1.url}}" alt="">{% endif %}
                 </div>
                 <div class="item">
-                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                    {% if sede.foto2|length > 0 %}<img src="{{sede.foto2.url}}" alt="">{% endif %}
                 </div>
                 <div class="item">
-                    <img src="img/latest-project/project-s-1.jpg" alt="">
+                    {% if sede.foto3|length > 0 %}<img src="{{sede.foto3.url}}" alt="">{% endif %}
                 </div>
             </div>
             <div class="link_btn">
