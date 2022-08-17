@@ -1,0 +1,20 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+    <section class="about_image">
+        <img class="img-fluid" src="/static/base/img/inrai/miempresa-col.jpg"  alt="">
+    </section>
+    <section class="about_studio_area">
+        <div class="container">
+            <div class="ab_studio_text">
+                <h6 class="s_title white">Nuestra Empresa</h6>
+                <h5>{{miempresa|safe}}</h5>
+            </div>
+        </div>
+    </section>
+
+{% endblock contenido %}

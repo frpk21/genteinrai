@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir
+from .models import Miempresa, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir
 from django.contrib.admin.widgets import AutocompleteSelect
 
 class SedesAdmin(admin.ModelAdmin):
@@ -52,7 +52,22 @@ class NoticiasAdmin(admin.ModelAdmin):
         obj.autor = request.user
         obj.save()
 
+class MiempresaAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'subtitulo', 'sede', 'ultima_hora', 'orden_destacado', 'imagen_destacado', 'modificado','activo', )
+    fields = ['titulo', 'subtitulo', 'sede', 'evento', ('orden_destacado', 'imagen_destacado'), 'descripcion', 'archivo_audio', 'urlvideo', 'ultima_hora', 'fuente', 'html', 'pdf', 'activo', ('fecha_inicio_publicacion', 'fecha_final_publicacion')]
+    exclude = ('slug','autor', 'modificado',)
+    ordering = ('sede', 'orden_destacado', 'titulo', '-modificado')
+    search_fields = ('titulo','subtitulo','sede')
+    list_filter = ('modificado', 'sede', 'orden_destacado')
 
+    class Meta:
+        model = Miempresa
+
+    def save_model(self, request, obj, form, change):
+        obj.autor = request.user
+        obj.save()
+
+admin.site.register(Miempresa, MiempresaAdmin)
 admin.site.register(Sedes, SedesAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Cargos, CargosAdmin)

@@ -19,6 +19,8 @@ urlpatterns = [
     path('noticias/', views.NoticiasView.as_view(), name='noticias'),
     url((r'^politica/$'), views.PoliticaView, name="politica"),
     path('busca/', views.get_ajaxBuscar, name='find_post'),
+    path('comp/', views.MiempresaView.as_view(), name='miempresa'),
+    path('comp/principios', views.PrincipiosView.as_view(), name='principios'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

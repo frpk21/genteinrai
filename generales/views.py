@@ -50,6 +50,34 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             )
         )
 
+class MiempresaView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/miempresa.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                sedes=sedes
+            )
+        )
+
+class PrincipiosView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/principios.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                sedes=sedes
+            )
+        )        
+
 class SedesView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/sedes.html'
     login_url='generales:login'

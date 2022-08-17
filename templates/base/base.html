@@ -61,10 +61,10 @@
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="nav navbar-nav">
 							<li class="dropdown submenu active">
-								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mi Empresa</a>
+								<a href="{% url 'generales:miempresa' %}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mi Empresa</a>
 								<ul class="dropdown-menu">
-									<li class="active"><a href="../light/index.html">Nuestra Empresa</a></li>
-									<li><a href="index.html">Principios & Fundamentos</a></li>
+									<li class="active"><a href="{% url 'generales:miempresa' %}">Nuestra Empresa</a></li>
+									<li><a href="{% url 'generales:principios' %}">Principios & Fundamentos</a></li>
                                     <li><a href="index.html">Himno</a></li>
 									<li><a href="../light/home-fullpage.html">Junta Directiva</a></li>
 									<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
@@ -123,10 +123,10 @@
 				</div>
 				<ul class="menu-list right-boxed">
 					<li class="active">
-						<a href="#">Inicio <i class="ion-chevron-down"></i></a>
+						<a href="{% url 'generales:miempresa' %}">Inicio <i class="ion-chevron-down"></i></a>
 						<ul class="list">
-							<li><a href="../light/index.html">Nuestra Empresa</a></li>
-							<li><a href="index.html">Principios & Fundamentos</a></li>
+							<li><a href="{% url 'generales:miempresa' %}">Nuestra Empresa</a></li>
+							<li><a href="{% url 'generales:principios' %}">Principios & Fundamentos</a></li>
 							<li><a href="../light/home-fullpage.html">Junta Directiva</a></li>
 							<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 						</ul>
@@ -172,7 +172,7 @@
                 <div class="footer_widgets row m0">
                     <aside class="f_widgets_item">
                         <div class="f_logo">
-                            <img class="img-fluid" src="img/logo.png" alt="">
+                            <img class="img-fluid" src="/static/base/img/inrai/logo-inrai-blanco-400px.png" width="200px" alt="">
                         </div>
                         
                     </aside>
