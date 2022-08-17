@@ -54,9 +54,8 @@ class NoticiasAdmin(admin.ModelAdmin):
 
 
 class MiempresaAdmin(admin.ModelAdmin):
-    list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios', 'modificado','activo', )
+    list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios' )
     fields = ['nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios',]
-    exclude = ('modificado','activo',)
 
     class Meta:
         model = Miempresa
