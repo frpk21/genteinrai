@@ -120,13 +120,13 @@ class NoticiasView(LoginRequiredMixin, generic.TemplateView):
 def get_ajaxBuscar(request, *args, **kwargs): 
     buscar = request.GET.get('buscar', None)
     if not buscar:
-        return JsonResponse(data={'result': '', 'errors': 'No hay noticias.'})
+        return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias con -'+buscar+'-'})
     else:
         buscar = Noticias.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
         if buscar:
             return JsonResponse(data=buscar, safe=False)
         else: 
-            return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias.'})
+            return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias con -'+buscar+'-'})
             
 def HomeView(request):
     template_name = 'generales/home.html'
