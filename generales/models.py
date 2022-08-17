@@ -137,6 +137,7 @@ class Suscribir(ClaseModelo):
     class Meta:
         verbose_name_plural = "Suscribirse"
 
+
 class Miempresa(models.Model):
     nuestra_empresa = RichTextField(max_length=15000, blank=True, null=True)
     mision = RichTextField(max_length=15000, blank=True, null=True)

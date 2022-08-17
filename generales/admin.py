@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Miempresa, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir
+from .models import Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir, Miempresa
 from django.contrib.admin.widgets import AutocompleteSelect
 
 class SedesAdmin(admin.ModelAdmin):
@@ -64,7 +64,6 @@ class MiempresaAdmin(admin.ModelAdmin):
         model = Miempresa
 
     def save_model(self, request, obj, form, change):
-        obj.autor = request.user
         obj.save()
 
 admin.site.register(Miempresa, MiempresaAdmin)
