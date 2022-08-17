@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Noticias, Sedes
+from .models import Noticias, Sedes, Miempresa
 from .forms import SuscribirseForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -54,13 +54,13 @@ class MiempresaView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/miempresa.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        emp = Miempresa.objects.all().last()
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                sedes=sedes
+                emp=emp
             )
         )
 
@@ -68,13 +68,13 @@ class PrincipiosView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/principios.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
+        emp = Miempresa.objects.all().last()
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                sedes=sedes
+                emp=emp
             )
         )        
 
