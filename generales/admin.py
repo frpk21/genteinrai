@@ -37,10 +37,6 @@ class FuncionariosAdmin(admin.ModelAdmin):
     class Meta:
         model = Funcionarios
 
-    def save_model(self, request, obj, form, change):
-        obj.sede = request.user.profile.sede
-        obj.save()
-
 
 class NoticiasAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'subtitulo', 'sede', 'ultima_hora', 'orden_destacado', 'imagen_destacado', 'modificado','activo', )
