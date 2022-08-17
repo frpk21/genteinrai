@@ -64,6 +64,7 @@ class Cargos(models.Model):
     nombre = models.CharField('Nombre Cargo', default='', blank=True, null=True, max_length=100)
  
     def save(self):
+        self.nombre = self.nombre.upper()
         super(Cargos, self).save()
 
     class Meta:
