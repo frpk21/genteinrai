@@ -63,6 +63,9 @@ class Profile(models.Model):
 class Cargos(models.Model):
     nombre = models.CharField('Nombre Cargo', default='', blank=True, null=True, max_length=100)
  
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
     def save(self):
         self.nombre = self.nombre.upper()
         super(Cargos, self).save()
@@ -82,6 +85,9 @@ class Funcionarios(models.Model):
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, default=0, null=False, blank=False)
     celular = models.CharField('Número de celular', default='', blank=True, null=True, max_length=60)
     email = models.CharField('E-Mail', blank=True, null=True, max_length=200, default="" )
+
+    def __str__(self):
+        return '{} {} {} {}'.format(self.nombre1, self.nombre2, self.apellido1, self.apellido2)
  
     def save(self):
         self.nombre1 = self.nombre1.upper()
