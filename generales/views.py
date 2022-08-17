@@ -88,9 +88,23 @@ class NoticiasView(LoginRequiredMixin, generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
         sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
-        noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
+        
         recientes = Noticias.objects.filter(modificado__gte=date.today())[:25]
-        self.object = None
+        #self.object = None
+        try:
+            noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
+            paginator1 = Paginator(noticias, 6)
+        except:
+            noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
+            paginator1 = Paginator(noticias, 6)
+        try:
+            page2 = int(request.GET.get('page', '1'))
+        except ValueError:
+            page2 = 1
+        try:
+            noticias = paginator1.page(page2)
+        except (EmptyPage, InvalidPage):
+            noticias = paginator1.page(paginator1.num_pages)
 
         return self.render_to_response(
             self.get_context_data(
@@ -98,10 +112,22 @@ class NoticiasView(LoginRequiredMixin, generic.TemplateView):
                 sedes=sedes,
                 noticias=noticias,
                 recientes=recientes,
+                paginator1=paginator1,
                 anor=date.today().year
             )
         )
 
+def get_ajaxBuscar(request, *args, **kwargs): 
+    buscar = request.GET.get('buscar', None)
+    if not buscar:
+        return JsonResponse(data={'result': '', 'errors': 'No hay noticias.'})
+    else:
+        buscar = Noticias.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
+        if buscar:
+            return JsonResponse(data=buscar, safe=False)
+        else: 
+            return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias.'})
+            
 def HomeView(request):
     template_name = 'generales/home.html'
     hoy = date.today()

@@ -39,13 +39,39 @@
                         {% endfor %}
                     </div>
                     <nav aria-label="Page navigation example" class="pagination_inner">
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item next"><a class="page-link" href="#"><i class="ion-ios-arrow-right"></i></a></li>
-                    </ul>
+                        <ul class="pagination">
+                            <li>
+                                {% if noticias.has_previous %}
+                                    <a href="?search={{ search }}&page={{ noticias.previous_page_number }}">
+                                        Ant.
+                                    </a>
+                                {% else %}
+                                    <span>Ant.</span>
+                                {% endif %}
+                            </li>					  
+                                {% for page_number in paginator1.page_range %}
+                                    {% if page_number ==  noticias.number%}
+                                        <li class="page-item active">
+                                            <span >{{ page_number }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a href="?search={{ search }}&page={{ page_number }}" class="page-link">
+                                                {{ page_number }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            <li>
+                                {% if noticias.has_next %}
+                                    <a href="?search={{ search }}&page={{ noticias.next_page_number }}">
+                                        Sig.
+                                    </a>
+                                {% else %}
+                                    <span>Sig.</span>
+                                {% endif %}
+                            </li>
+                        </ul>
                     </nav>
                 </div>
                 <div class="col-lg-3">
@@ -55,12 +81,12 @@
                                 <h3>Buscar</h3>
                             </div>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Ingrese palabra clave....." aria-label="Recipient's username">
+                                <input type="text" id="id_buscar" class="form-control" placeholder="Ingrese palabra clave....." onchange="buscar_notas()">
                             </div>
                         </aside>
                         <aside class="l_widget categories_wd">
                             <div class="l_wd_title">
-                                <h3>Categor&iacute;as</h3>
+                                <h3>Sedes INRAI</h3>
                             </div>
                             <ul class="list">
                                 <li><a href="#">Todo <span></span></a></li>
@@ -103,5 +129,30 @@
             </div>
         </div>
     </section>
+    
+    <script>
+        function buscar_notas() {
+            var r = $("#id_buscar").val();
+            var datos = {'buscar':r};
+            $.get( "{% url 'generales:find_post' %}", datos, function( data ) {
+                //console.log(data);
+                if (data.errors){
+                    swal({
+                        title: data.errors,
+                        showCancelButton: false,
+                        showConfirmButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        buttonsStyling: false
+                    }).catch(swal.noop);
+                    $("#id_buscar").val('');
+                    document.getElementById("id_buscar").focus();
+                }
+                else {
+                
+                }
+    
+            } );
+        }
+    </script>
 
 {% endblock contenido %}
