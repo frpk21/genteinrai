@@ -122,9 +122,9 @@ def get_ajaxBuscar(request, *args, **kwargs):
     if not buscar:
         return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias con -'+buscar+'-'})
     else:
-        buscar = Noticias.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
-        if buscar:
-            return JsonResponse(data=buscar, safe=False)
+        noticias = Noticias.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
+        if noticias:
+            return JsonResponse(data=noticias, safe=False)
         else: 
             return JsonResponse(data={'result': '', 'errors': 'No encuentro noticias con -'+buscar+'-'})
             
