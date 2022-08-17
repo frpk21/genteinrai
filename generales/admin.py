@@ -32,6 +32,7 @@ class FuncionariosAdmin(admin.ModelAdmin):
     ordering = ['sede','apellido1','nombre1',]
     search_fields = ('nombre1','nombre2','apellido1','apellido2',)
     list_filter = ('sede',)
+    autocomplete_fields = ['cargo']
 
     class Meta:
         model = Funcionarios
