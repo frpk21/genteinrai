@@ -52,13 +52,11 @@ class NoticiasAdmin(admin.ModelAdmin):
         obj.autor = request.user
         obj.save()
 
+
 class MiempresaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'subtitulo', 'sede', 'ultima_hora', 'orden_destacado', 'imagen_destacado', 'modificado','activo', )
-    fields = ['titulo', 'subtitulo', 'sede', 'evento', ('orden_destacado', 'imagen_destacado'), 'descripcion', 'archivo_audio', 'urlvideo', 'ultima_hora', 'fuente', 'html', 'pdf', 'activo', ('fecha_inicio_publicacion', 'fecha_final_publicacion')]
-    exclude = ('slug','autor', 'modificado',)
-    ordering = ('sede', 'orden_destacado', 'titulo', '-modificado')
-    search_fields = ('titulo','subtitulo','sede')
-    list_filter = ('modificado', 'sede', 'orden_destacado')
+    list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios', 'modificado','activo', )
+    fields = ['nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios',]
+    exclude = ('modificado','activo',)
 
     class Meta:
         model = Miempresa
