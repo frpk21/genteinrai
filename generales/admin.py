@@ -54,8 +54,8 @@ class NoticiasAdmin(admin.ModelAdmin):
 
 
 class MiempresaAdmin(admin.ModelAdmin):
-    list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios' )
-    fields = ['nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios',]
+    list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios', 'himno_letra', 'himno_audio', )
+    fields = ['nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios', 'himno_letra', 'himno_audio',]
 
     class Meta:
         model = Miempresa
