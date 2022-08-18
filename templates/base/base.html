@@ -34,15 +34,8 @@
         <link href="/static/base/vendors/popup/magnific-popup.css" rel="stylesheet">
         <link href="/static/base/vendors/owl-carousel/owl.carousel.min.css" rel="stylesheet">
         <link href="/static/base/vendors/animsition/css/animsition.min.css" rel="stylesheet">
-        
         <link href="/static/base/css/style1.css" rel="stylesheet">
         <link href="/static/base/css/responsive.css" rel="stylesheet">
-
-
-
-
-
-
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -72,7 +65,6 @@
 									<li class="active"><a href="{% url 'generales:miempresa' %}">Nuestra Empresa</a></li>
 									<li><a href="{% url 'generales:principios' %}">Principios & Fundamentos</a></li>
                                     <li><a href="{% url 'generales:himno' %}">Himno</a></li>
-									<li><a href="../light/home-fullpage.html">Junta Directiva</a></li>
 									<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 								</ul>
 							</li>
@@ -84,20 +76,10 @@
 									<li><a href="work-grid.html">Bienestar Social</a></li>
 									<li><a href="work-list.html">Salud Ocupacional</a></li>
 									<li><a href="work-masonry.html">Reglamento Interno</a></li>
-									<li><a href="project-detail.html">Organigrama</a></li>
+									<li><a href="{% url 'generales:org' %}">Organigrama</a></li>
 								</ul>
 							</li>
-							<li class="dropdown submenu">
-								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cumplea&ntilde;os</a>
-								<ul class="dropdown-menu">
-									<li><a href="blog-grid.html">Blog Grid</a></li>
-									<li><a href="blog-masonry.html">Blog Masonry</a></li>
-									<li><a href="blog-with-sidebar.html">Blog With Sidebar</a></li>
-									<li><a href="single-blog-gallery.html">Single Blog Gallery</a></li>
-									<li><a href="single-blog-image.html">Single Blog Image</a></li>
-									<li><a href="single-blog-video.html">Single Blog Video</a></li>
-								</ul>
-							</li>
+							<li><a href="{% url 'generales:sedes' %}">Cumplea&ntilde;eros</a></li>
                             <li><a href="contact.html">Gerencia</a></li>
 							<li><a href="contact.html">El Muro</a></li>
 						</ul>
@@ -134,7 +116,6 @@
 							<li><a href="{% url 'generales:miempresa' %}">Nuestra Empresa</a></li>
 							<li><a href="{% url 'generales:principios' %}">Principios & Fundamentos</a></li>
                             <li><a href="{% url 'generales:himno' %}">Himno</a></li>
-							<li><a href="../light/home-fullpage.html">Junta Directiva</a></li>
 							<li><a href="home-fullpage.html">Fundaci&oacute;n</a></li>
 						</ul>
 					</li>
@@ -146,20 +127,10 @@
 							<li><a href="work-grid.html">Bienestar Social</a></li>
 							<li><a href="work-list.html">Salud Ocupacional</a></li>
 							<li><a href="work-masonry.html">Reglamento Interno</a></li>
-							<li><a href="project-detail.html">Organigrama</a></li>
+							<li><a href="{% url 'generales:org' %}">Organigrama</a></li>
 						</ul>
 					</li>
-					<li>
-						<a href="#">Cumplea&ntilde;os <i class="ion-chevron-down"></i></a>
-						<ul class="list">
-							<li><a href="blog-grid.html">Blog Grid</a></li>
-							<li><a href="blog-masonry.html">Blog Masonry</a></li>
-							<li><a href="blog-with-sidebar.html">Blog With Sidebar</a></li>
-							<li><a href="single-blog-gallery.html">Single Blog Gallery</a></li>
-							<li><a href="single-blog-image.html">Single Blog Image</a></li>
-							<li><a href="single-blog-video.html">Single Blog Video</a></li>
-						</ul>
-					</li>
+					<li><a href="{% url 'generales:sedes' %}">Cumplea&ntilde;eros</a></li>
 					<li><a href="contact.html">Gerencia</a></li>
 					<li><a href="contact.html">El Muro</a></li>
 				</ul>

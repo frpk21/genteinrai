@@ -92,6 +92,19 @@ class HimnoView(LoginRequiredMixin, generic.TemplateView):
             )
         ) 
 
+class OrganigramaView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/org.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        emp = Miempresa.objects.all().last()
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                emp=emp
+            )
+        ) 
 
 class SedesView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/sedes.html'

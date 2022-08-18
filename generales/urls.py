@@ -22,6 +22,7 @@ urlpatterns = [
     path('comp/', views.MiempresaView.as_view(), name='miempresa'),
     path('comp/principios', views.PrincipiosView.as_view(), name='principios'),
     path('comp/himno', views.HimnoView.as_view(), name='himno'),
+    path('comp/org', views.OrganigramaView.as_view(), name='org'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  
