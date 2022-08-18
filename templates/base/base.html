@@ -73,9 +73,9 @@
 							<li class="dropdown submenu">
 								<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recursos Humanos</a>
 								<ul class="dropdown-menu">
-									<li><a href="work-grid.html">Bienestar Social</a></li>
-									<li><a href="work-list.html">Salud Ocupacional</a></li>
-									<li><a href="work-masonry.html">Reglamento Interno</a></li>
+									<li><a href="{% url 'generales:bienestar' %}">Bienestar Social</a></li>
+									<li><a href="{% url 'generales:ocupacional' %}">Salud Ocupacional</a></li>
+									<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
 									<li><a href="{% url 'generales:org' %}">Organigrama</a></li>
 								</ul>
 							</li>
@@ -124,9 +124,9 @@
 					<li>
 						<a href="#">Recursos Humanos <i class="ion-chevron-down"></i></a>
 						<ul class="list">
-							<li><a href="work-grid.html">Bienestar Social</a></li>
-							<li><a href="work-list.html">Salud Ocupacional</a></li>
-							<li><a href="work-masonry.html">Reglamento Interno</a></li>
+							<li><a href="{% url 'generales:bienestar' %}">Bienestar Social</a></li>
+							<li><a href="{% url 'generales:ocupacional' %}">Salud Ocupacional</a></li>
+							<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
 							<li><a href="{% url 'generales:org' %}">Organigrama</a></li>
 						</ul>
 					</li>

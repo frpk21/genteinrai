@@ -22,6 +22,9 @@ urlpatterns = [
     path('comp/', views.MiempresaView.as_view(), name='miempresa'),
     path('comp/principios', views.PrincipiosView.as_view(), name='principios'),
     path('comp/himno', views.HimnoView.as_view(), name='himno'),
+    path('comp/bienestar', views.BienestarView.as_view(), name='bienestar'),
+    path('comp/ocupacional', views.OcupacionalView.as_view(), name='ocupacional'),
+    path('comp/reglamento', views.ReglamentoView.as_view(), name='reglamento'),
     path('comp/org', views.OrganigramaView.as_view(), name='org'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

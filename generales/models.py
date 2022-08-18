@@ -79,7 +79,7 @@ class Funcionarios(models.Model):
     apellido1 = models.CharField('Primer apellido', default='', blank=False, null=False, max_length=50)
     apellido2 = models.CharField('Segundo apellido', default='', blank=True, null=True, max_length=50)
     fecha_nacimiento = models.DateField('Fecha de nacimiento', blank=False, null=False)
-    foto = models.FileField("Archivo con Foto del Funcionario", upload_to="fotos/", blank=False, null=False, default="")
+    foto = models.FileField("Archivo con Foto del Funcionario (200 x 200px)", upload_to="fotos/", blank=False, null=False, default="")
     sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=0, null=False, blank=False)
     direccion = models.CharField('Dirección Residencia', default='', blank=True, null=True, max_length=100)
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, default=0, null=False, blank=False)
@@ -108,7 +108,7 @@ class Noticias(ClaseModelo):
     fecha_final_publicacion = models.DateField('Fecha de finalización de publicación', blank=True, null=True, default=datetime.now)
     CHOICES = ((0,'Principal'),(1,'Destacado 1'),(2,'Destacado 2'),(3,'Destacado 3'),(4,'General 4'))
     orden_destacado = models.IntegerField(choices=CHOICES, default=0, blank=False, null=False)
-    imagen_destacado = models.FileField("Imagen Destacado", upload_to="imagenes/", blank=True, null=True)
+    imagen_destacado = models.FileField("Imagen Destacado (476 x 570px)", upload_to="imagenes/", blank=True, null=True)
     inrai_video = models.TextField("Video Streaming Inrai",max_length=10000, default="", blank=True, null=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,default='')
     fuente = models.CharField(help_text='Fuente noticia', blank=False, null=False, max_length=50, default="INRAI")
@@ -151,4 +151,48 @@ class Miempresa(models.Model):
         return '{}'.format(self.id)
 
     class Meta:
-        verbose_name_plural = "Nuestra Empresa"        
+        verbose_name_plural = "Nuestra Empresa"
+
+
+class Bienestar(ClaseModelo):
+    titulo = models.CharField(blank=False, null=False, max_length=200)
+    detalle = RichTextField("Detalle", max_length=15000, blank=True, null=True)
+    foto = models.FileField("Foto (417 x 269px)", upload_to="fotos/", blank=True, null=True, default='')
+    CHOICES = (('news','Noticias'),('event','Eventos'),('insp','Medio Ambiente'))
+    tipo = models.CharField(choices=CHOICES, max_length=5, default='news', blank=False, null=False)
+ 
+    def __str__(self):
+        return '{}'.format(self.titulo)
+
+    def save(self):
+        self.slug = slugify(self.titulo)
+        super(Bienestar, self).save()
+
+    class Meta:
+        verbose_name_plural = "Bienestar Social"
+
+
+class Ocupacional(ClaseModelo):
+    titulo = models.CharField(blank=False, null=False, max_length=200)
+    detalle = RichTextField("Detalle", max_length=15000, blank=True, null=True)
+    foto = models.FileField("Foto (417 x 269px)", upload_to="fotos/", blank=True, null=True, default='')
+ 
+    def __str__(self):
+        return '{}'.format(self.titulo)
+
+    def save(self):
+        self.slug = slugify(self.titulo)
+        super(Ocupacional, self).save()
+
+    class Meta:
+        verbose_name_plural = "Salud Ocupacional"
+
+
+class Reglamento(models.Model):
+    reglamento = RichTextField("Reglamento Interno de Trabajo", max_length=15000, blank=True, null=True)
+ 
+    def __str__(self):
+        return '{}'.format(self.id)
+
+    class Meta:
+        verbose_name_plural = "Reglamento"        

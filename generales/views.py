@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Noticias, Sedes, Miempresa
+from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa
 from .forms import SuscribirseForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -92,17 +92,57 @@ class HimnoView(LoginRequiredMixin, generic.TemplateView):
             )
         ) 
 
-class OrganigramaView(LoginRequiredMixin, generic.TemplateView):
-    template_name='generales/org.html'
+class BienestarView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/bienestar.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        emp = Miempresa.objects.all().last()
+        bienestar = Bienestar.objects.all().order_by('modificado')
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                emp=emp
+                bienestar=bienestar
+            )
+        ) 
+
+class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/ocupacional.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        ocupacional = Ocupacional.objects.all().order_by('-modificado')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                ocupacional=ocupacional
+            )
+        ) 
+
+class ReglamentoView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/ocupacional.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        ocupacional = Ocupacional.objects.all().order_by('modificado')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                ocupacional=ocupacional
+            )
+        ) 
+
+class OrganigramaView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/org.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year
             )
         ) 
 
