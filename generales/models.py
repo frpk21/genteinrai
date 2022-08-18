@@ -139,11 +139,13 @@ class Suscribir(ClaseModelo):
 
 
 class Miempresa(models.Model):
-    nuestra_empresa = RichTextField(max_length=15000, blank=True, null=True)
-    mision = RichTextField(max_length=15000, blank=True, null=True)
-    vision = RichTextField(max_length=15000, blank=True, null=True)
-    objetivo = RichTextField(max_length=15000, blank=True, null=True)
-    principios = RichTextField(max_length=15000, blank=True, null=True)
+    nuestra_empresa = RichTextField("Nuestra Empresa", max_length=15000, blank=True, null=True)
+    mision = RichTextField("Mision", max_length=15000, blank=True, null=True)
+    vision = RichTextField("Vision", max_length=15000, blank=True, null=True)
+    objetivo = RichTextField("Objetivo General", max_length=15000, blank=True, null=True)
+    principios = RichTextField("Principios y Fundamentos", max_length=15000, blank=True, null=True)
+    himno_letra = RichTextField("Letra Himno Sistema INRAI", max_length=15000, blank=True, null=True)
+    himno_audio = models.FileField("Archivo Audio Himno Sistema INRAI", upload_to="audio/", blank=True, null=True, default='')
  
     def __str__(self):
         return '{}'.format(self.id)

@@ -1,0 +1,24 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+    <section class="about_image">
+        <img class="img-fluid" src="/static/base/img/inrai/himno.jpg"  alt="">
+    </section>
+    <section>
+        <div class="container">
+            <div><br>
+                <div class="row justify-content-center">
+                    <h6 class="s_title white">Principios y Fundamentos</h6>
+                </div>
+                <div class="row justify-content-center">
+                    <h3>{{emp.principios|safe}}</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock contenido %}
