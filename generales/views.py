@@ -20,7 +20,11 @@ from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa
 from .forms import SuscribirseForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from io import StringIO
+import os
 
 class SinPrivilegios(PermissionRequiredMixin):
     login_url='generales:sin_privilegios'
@@ -161,6 +165,38 @@ class SedesView(LoginRequiredMixin, generic.TemplateView):
                 anor=date.today().year
             )
         )
+
+
+class ContactoView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/contacto.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                hoy=date.today(),
+                anor=date.today().year
+            )
+        )
+
+def get_ajaxEnviar(request, *args, **kwargs): 
+    msg = request.GET.get('msg', None)
+    if not msg:
+        return JsonResponse(data={'result': '', 'errors': 'No ha escrito mensage alguo.'})
+    else:
+        out = StringIO()
+        subject = "CONTACTO GENTE INRAI "+request.user.first_name+' '+request.user.last_name
+        message = msg
+        email_from = request.user.email
+        recipient_list = ['hebel.borrero@sistemainrai.net','recursoshumanos@sistemainrai.net']
+        msg = EmailMessage(subject, message, email_from, recipient_list)
+        result = msg.send(fail_silently=False)
+        if result == 1:
+            return JsonResponse(data={'result': 'ok', 'errors': ''})
+        else: 
+            return JsonResponse(data={'result': '', 'errors': 'Lo siento, no se pudo enviar el mensage.'})
 
 class DetalleSedeView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/detalle_sede.html'

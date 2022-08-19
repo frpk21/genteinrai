@@ -151,8 +151,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "medios.bogota@sistemainrai.net"
-EMAIL_HOST_PASSWORD = "Daniela2020Charry"
+EMAIL_HOST_USER = "recursoshumanos@sistemainrai.net"
+EMAIL_HOST_PASSWORD = "inrai2022."
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

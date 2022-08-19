@@ -26,6 +26,8 @@ urlpatterns = [
     path('comp/ocupacional', views.OcupacionalView.as_view(), name='ocupacional'),
     path('comp/reglamento', views.ReglamentoView.as_view(), name='reglamento'),
     path('comp/org', views.OrganigramaView.as_view(), name='org'),
+    path('contacto', views.ContactoView.as_view(), name='contacto'),
+    path('enviar/', views.get_ajaxEnviar, name='enviar'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  
