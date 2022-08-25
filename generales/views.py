@@ -147,25 +147,25 @@ class TutorialesView(LoginRequiredMixin, generic.TemplateView):
         tipos = Tipos_tutoriales.objects.all().order_by('nombre')
         try:
             tutoriales = Tutoriales.objects.all()[:25]
-            #paginator1 = Paginator(tutoriales, 1)
+            paginator1 = Paginator(tutoriales, 6)
         except:
             tutoriales = Tutoriales.objects.all()[:25]
-            #paginator1 = Paginator(tutoriales, 1)
+            paginator1 = Paginator(tutoriales, 6)
         try:
             page2 = int(request.GET.get('page', '1'))
         except ValueError:
             page2 = 1
-        #try:
-            #tutoriales = paginator1.page(page2)
-        #except (EmptyPage, InvalidPage):
-            #tutoriales = paginator1.page(paginator1.num_pages)
+        try:
+            tutoriales = paginator1.page(page2)
+        except (EmptyPage, InvalidPage):
+            tutoriales = paginator1.page(paginator1.num_pages)
 
         return self.render_to_response(
             self.get_context_data(
                 hoy=date.today(),
                 tipos=tipos,
                 tutoriales=tutoriales,
-                #paginator1=paginator1,
+                paginator1=paginator1,
                 anor=date.today().year
             )
         )
