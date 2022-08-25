@@ -5,11 +5,6 @@
 
 {% block contenido %}
 
-<section class="about_image">
-    <div style="padding-top: 140px;">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.715947102806!2d-74.0715503!3d4.6446711999999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9a4c00000001%3A0xca5ae3c2bbd085e2!2sINRAI%20LTDA!5e0!3m2!1ses!2sco!4v1660914897294!5m2!1ses!2sco" width="100%" height="622px" style="border:0;"></iframe>
-    </div>
-</section>
 <section class="contact_area2">
     <div class="container">
         <div class="row">
@@ -25,12 +20,13 @@
             <div class="col-lg-7">
                 <div class="right_contact_form">
                     <h4>Ev&iacute;anos tu mensage</h4>
-                    <form class="row contact_us_form">
+                    <form class="row contact_us_form " method="GET" action="{% url 'generales:enviar' %}">
+                        {% csrf_token %}
                         <div class="form-group col-md-12">
-                            <textarea class="form-control" name="msg" id="id_msg" rows="1" placeholder="tu mensage" required></textarea>
+                            <textarea class="form-control" name="msg" id="msg" rows="1" placeholder="Escribe aqu&iacute; tu mensage." required></textarea>
                         </div>
                         <div class="form-group col-md-12">
-                            <button type="submit" class="btn order_s_btn form-control" onclick="enviar()">Enviar <i class="ion-ios-play"></i></button>
+                            <button type="submit" class="btn order_s_btn " onclick="enviar()">Enviar <i class="ion-ios-play"></i></button>
                         </div> 
                     </form>
                 </div>
@@ -40,8 +36,9 @@
 </section>
 
 <script>
+    
     function enviar() {
-        var msg = $("#id_msg").val();
+        var msg = $("#msg").val();
         var datos = {'msg':msg};
         $.get( "{% url 'generales:enviar' %}", datos, function( data ) {
             if (data.errors){
@@ -49,24 +46,24 @@
                     title:data.errors,
                     showCancelButton: true,
                     showConfirmButton: false,
-                    cancelButtonClass: 'btn btn-cancel',
-                    buttonsStyling: false
+                    cancelButtonClass: 'btn btn-danger',
+                    buttonsStyling: true
                 }).catch(swal.noop);
             }
             else {
+                
                 swal({
                     title:"Su mensage ha sido enviado. Gracias por contactarnos.",
                     showCancelButton: false,
                     showConfirmButton: true,
                     confirmButtonClass: 'btn btn-success',
-                    buttonsStyling: false
+                    buttonsStyling: true
                 }).catch(swal.noop);
-                $("#id_msg").val('');
+
             }
         } );
-        
     }
+
 </script>
-<!--  Plugin for Sweet Alert -->
-<script src="/static/base/plugins/js/sweetalert2.js"></script>
+
 {% endblock contenido %}

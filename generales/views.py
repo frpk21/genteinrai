@@ -24,7 +24,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from io import StringIO
-import os
+import os, time
 
 class SinPrivilegios(PermissionRequiredMixin):
     login_url='generales:sin_privilegios'
@@ -181,22 +181,37 @@ class ContactoView(LoginRequiredMixin, generic.TemplateView):
             )
         )
 
+
 def get_ajaxEnviar(request, *args, **kwargs): 
     msg = request.GET.get('msg', None)
+    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", msg)
     if not msg:
-        return JsonResponse(data={'result': '', 'errors': 'No ha escrito mensage alguo.'})
+        return JsonResponse(data={'result': '', 'errors': 'No ha escrito mensage alguno.'})
     else:
         out = StringIO()
         subject = "CONTACTO GENTE INRAI "+request.user.first_name+' '+request.user.last_name
         message = msg
-        email_from = request.user.email
+        email_from = settings.EMAIL_HOST_USER
         recipient_list = ['hebel.borrero@sistemainrai.net','recursoshumanos@sistemainrai.net']
         msg = EmailMessage(subject, message, email_from, recipient_list)
         result = msg.send(fail_silently=False)
+
         if result == 1:
-            return JsonResponse(data={'result': 'ok', 'errors': ''})
+            return JsonResponse(
+            {
+                'content': {
+                    'message': 'Su mensaje ha sido enviado correctamente','errors': '',
+                }
+            }
+        )
         else: 
-            return JsonResponse(data={'result': '', 'errors': 'Lo siento, no se pudo enviar el mensage.'})
+            return JsonResponse(
+            {
+                'content': {
+                    'message': 'Su mensaje no puedo ser enviado','errors': 'error al enviar',
+                }
+            }
+        )
 
 class DetalleSedeView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/detalle_sede.html'
