@@ -189,7 +189,7 @@ class Ocupacional(ClaseModelo):
 
 
 class Reglamento(models.Model):
-    reglamento = RichTextField("Reglamento Interno de Trabajo", max_length=15000, blank=True, null=True)
+    reglamento = RichTextField("Reglamento Interno de Trabajo", max_length=200000, blank=True, null=True)
  
     def __str__(self):
         return '{}'.format(self.id)
