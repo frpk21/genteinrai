@@ -23,7 +23,7 @@
                             <div class="blog_side_item">
                                 <div class="media">
                                     <div class="d-flex">
-                                        {% if video.urlvideo != None and video.urlvideo != '' %}
+                                        {% if video.archivo_video|length > 0 %}
                                         <div class="slider_text_box">
                                             <div id="small-dialog1" class="zoom-anim-dialog mfp-hide embed-responsive embed-responsive-16by9">          
                                                 okk 111111111111111111 {{video.urlvideo}}
