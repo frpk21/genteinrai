@@ -24,6 +24,9 @@
                                 <div class="media">
                                     <div class="d-flex">
                                         {% if video.archivo_video %}
+                                        <video src="{{video.urlvideo.url}}" autoplay poster="posterimage.jpg">
+                                            Tu navegador no admite el elemento <code>video</code>.
+                                          </video>
                                         <div class="slider_text_box">
                                             <div id="small-dialog1" class="zoom-anim-dialog mfp-hide embed-responsive embed-responsive-16by9">          
                                                 okk 111111111111111111 {{video.urlvideo}}
