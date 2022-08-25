@@ -24,6 +24,7 @@ urlpatterns = [
     path('comp/himno', views.HimnoView.as_view(), name='himno'),
     path('comp/bienestar', views.BienestarView.as_view(), name='bienestar'),
     path('comp/ocupacional', views.OcupacionalView.as_view(), name='ocupacional'),
+    path('elmuro', views.ElmuroView.as_view(), name='elmuro'),
     path('comp/reglamento', views.ReglamentoView.as_view(), name='reglamento'),
     path('comp/org', views.OrganigramaView.as_view(), name='org'),
     path('contacto', views.ContactoView.as_view(), name='contacto'),

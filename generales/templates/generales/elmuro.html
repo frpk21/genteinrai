@@ -1,0 +1,52 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+<section class="about_image">
+    <img class="img-fluid" src="/static/base/img/elmuro.jpg"  alt="">
+</section>
+<section class="our_projects_area">
+    <div class="container">
+        <div class="projects_tt">
+            <div class="float-md-left">
+                <div class="main_title white">
+                    <h2>el muro</h2>
+                </div>
+            </div>
+            <!--<div class="float-md-right">
+                <ul class="isotope_fillter list">
+                    <li class="active" data-filter="*"><a href="#">Bienestar</a></li>
+                    <li data-filter=".news"><a href="#">Noticias</a></li>
+                    <li data-filter=".event"><a href="#">Eventos</a></li>
+                    <li data-filter=".insp"><a href="#">Medio ambiente</a></li>
+                </ul>
+            </div>-->
+        </div>
+    </div>
+    <div class="blog_grid_inner">
+        <div class="row blog_inner_fillter">
+            {% for item in elmuro %}
+                <div class="col-lg-3 col-md-4 col-sm-6 news {{item.tipo}}">
+                    <div class="blog_g_item">
+                        <div class="press_img_item">
+                            <div class="press_img">
+                                <img class="img-fluid" src="{{item.foto.url}}" alt="">
+                            </div>
+                            <div class="date">
+                                <a href="#">{{item.modificado}}</a>
+                                <i class="ion-record"></i>
+                                <a href="#">{{item.tipo}}</a>
+                            </div>
+                            <a href="#"><h4>{{item.titulo}}</h4></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock contenido %}
