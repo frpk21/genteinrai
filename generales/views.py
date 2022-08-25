@@ -128,7 +128,7 @@ class ReglamentoView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/reglamento.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        reglamento = Reglamento.objects.all().last()
+        reglamento = Reglamento.objects.get(sede=self.request.user.profile.sede)
         self.object = None
 
         return self.render_to_response(
