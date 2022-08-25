@@ -19,16 +19,19 @@ urlpatterns = [
     path('noticias/', views.NoticiasView.as_view(), name='noticias'),
     url((r'^politica/$'), views.PoliticaView, name="politica"),
     path('busca/', views.get_ajaxBuscar, name='find_post'),
+    path('buscar_tutorial/', views.get_ajaxBuscarTutorial, name='find_tutorial'),
     path('comp/', views.MiempresaView.as_view(), name='miempresa'),
     path('comp/principios', views.PrincipiosView.as_view(), name='principios'),
     path('comp/himno', views.HimnoView.as_view(), name='himno'),
     path('comp/bienestar', views.BienestarView.as_view(), name='bienestar'),
     path('comp/ocupacional', views.OcupacionalView.as_view(), name='ocupacional'),
     path('elmuro', views.ElmuroView.as_view(), name='elmuro'),
+    path('tutoriales', views.TutorialesView.as_view(), name='tutoriales'),
     path('comp/reglamento', views.ReglamentoView.as_view(), name='reglamento'),
     path('comp/org', views.OrganigramaView.as_view(), name='org'),
     path('contacto', views.ContactoView.as_view(), name='contacto'),
     path('enviar/', views.get_ajaxEnviar, name='enviar'),
+    path('tutoriales/tp/<int:pk>', views.TipoTutorialView.as_view(), name='tipo_tutorial'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

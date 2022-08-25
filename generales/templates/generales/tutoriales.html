@@ -1,0 +1,147 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+
+{% load humanize %}
+
+    <section class="breadcrumb_link">
+        <div class="container">
+            <a href="{% url 'generales:home' %}">Mi Empresa</a>
+            <a href="#">Tutoriales</a>
+        </div>
+    </section>
+
+    <section class="blog_sidebar_area">
+        <div class="container">
+            <div class="row row_direction">
+                <div class="col-lg-8 offset-lg-1">
+                    <div class="blog_side_inner">
+                        {% for item in tutoriales %}
+                            <div class="blog_side_item">
+                                <div class="media">
+                                    <div class="d-flex">
+                                        {% if item.archivo_video|length > 0 %}
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive" src="{{item.archivo_video.url}}"></iframe>
+                                            </div>
+                                        {% else %}
+                                            <div class="embed-responsive embed-responsive-16by9">
+                                                <iframe class="embed-responsive" src="{{item.urlvideo.url}}"></iframe>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <a class="tag" href="#">{{item.tipo.nombre}}</a>
+                                        <a href="#"><h4>{{item.titulo}}</h4></a>
+                                        <a class="time" href="#">{{item.modificado.date}}</a>
+                                        <p>{{item.subtitulo}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <nav aria-label="Page navigation example" class="pagination_inner">
+                        <ul class="pagination">
+                            <li>
+                                {% if tutoriales.has_previous %}
+                                    <a href="?search={{ search }}&page={{ tutoriales.previous_page_number }}">
+                                        Ant.
+                                    </a>
+                                {% else %}
+                                    <span>Ant.</span>
+                                {% endif %}
+                            </li>					  
+                                {% for page_number in paginator1.page_range %}
+                                    {% if page_number ==  tutoriales.number%}
+                                        <li class="page-item active">
+                                            <span >{{ page_number }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a href="?search={{ search }}&page={{ page_number }}" class="page-link">
+                                                {{ page_number }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            <li>
+                                {% if tutoriales.has_next %}
+                                    <a href="?search={{ search }}&page={{ tutoriales.next_page_number }}">
+                                        Sig.
+                                    </a>
+                                {% else %}
+                                    <span>Sig.</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="left_sidebar_area">
+                        <aside class="l_widget search_wd">
+                            <div class="l_wd_title">
+                                <h3>Buscar</h3>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" id="id_buscar" class="form-control" placeholder="Ingrese palabra clave....." onchange="buscar_tutorial()">
+                            </div>
+                        </aside>
+                        <aside class="l_widget categories_wd">
+                            <div class="l_wd_title">
+                                <h3>Temas</h3>
+                            </div>
+                            <ul class="list">
+                                <li><a href="{% url 'generales:tutoriales' %}">Todo <span></span></a></li>
+                                {% for item in tipos %}
+                                    <li><a href="{% url 'generales:tipo_tutorial' item.id %}">{{item.nombre}}<span></span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </aside>
+
+                        <!--<aside class="l_widget tags_wd">
+                            <div class="l_wd_title">
+                                <h3>Tags</h3>
+                            </div>
+                            <div class="tag_list">
+                                <a href="#">Structure</a>
+                                <a href="#">Envato</a>
+                                <a href="#">Premium</a>
+                                <a href="#">Clean</a>
+                                <a href="#">WordPress</a>
+                            </div>
+                        </aside>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        function buscar_tutorial() {
+            var r = $("#id_buscar").val();
+            var datos = {'buscar':r};
+            $.get( "{% url 'generales:find_tutorial' %}", datos, function( data ) {
+                //console.log(data);
+                if (data.errors){
+                    swal({
+                        title: data.errors,
+                        showCancelButton: false,
+                        showConfirmButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        buttonsStyling: false
+                    }).catch(swal.noop);
+                    $("#id_buscar").val('');
+                    document.getElementById("id_buscar").focus();
+                }
+                else {
+                
+                }
+    
+            } );
+        }
+    </script>
+
+{% endblock contenido %}

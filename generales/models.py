@@ -165,11 +165,44 @@ class Bienestar(ClaseModelo):
         return '{}'.format(self.titulo)
 
     def save(self):
-        self.slug = slugify(self.titulo)
+        self.titulo = self.titulo.upper()
         super(Bienestar, self).save()
 
     class Meta:
         verbose_name_plural = "Bienestar Social"
+
+
+
+class Tipos_tutoriales(ClaseModelo):
+    nombre = models.CharField(blank=False, null=False, max_length=200)
+ 
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+    def save(self):
+        self.nombre = self.nombre.upper()
+        super(Tipos_tutoriales, self).save()
+
+    class Meta:
+        verbose_name_plural = "Tipos de Tutoriales"
+
+class Tutoriales(ClaseModelo):
+    tipo = models.ForeignKey(Tipos_tutoriales, on_delete=models.CASCADE, default=0, null=False, blank=False)
+    titulo = models.CharField(blank=False, null=False, max_length=200)
+    subtitulo = models.CharField(blank=False, null=False, max_length=500)
+    urlvideo = models.CharField('URL Youtube', blank=True, null=True, default='', max_length=200)
+    archivo_video = models.FileField("Archivo de Video", upload_to="tutoriales/", blank=True, null=True, default='')
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,default='')
+    
+    def __str__(self):
+        return '{}'.format(self.titulo)
+
+    def save(self):
+        self.titulo = self.titulo.upper()
+        super(Tutoriales, self).save()
+
+    class Meta:
+        verbose_name_plural = "Tutoriales"
 
 
 class Ocupacional(ClaseModelo):
@@ -181,7 +214,7 @@ class Ocupacional(ClaseModelo):
         return '{}'.format(self.titulo)
 
     def save(self):
-        self.slug = slugify(self.titulo)
+        self.titulo = self.titulo.upper()
         super(Ocupacional, self).save()
 
     class Meta:

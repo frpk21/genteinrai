@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro
+from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales
 from .forms import SuscribirseForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -138,6 +138,82 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
             )
         ) 
 
+
+class TutorialesView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/tutoriales.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        tipos = Tipos_tutoriales.objects.all().order_by('nombre')
+        try:
+            tutoriales = Tutoriales.objects.all()[:25]
+            #paginator1 = Paginator(tutoriales, 1)
+        except:
+            tutoriales = Tutoriales.objects.all()[:25]
+            #paginator1 = Paginator(tutoriales, 1)
+        try:
+            page2 = int(request.GET.get('page', '1'))
+        except ValueError:
+            page2 = 1
+        #try:
+            #tutoriales = paginator1.page(page2)
+        #except (EmptyPage, InvalidPage):
+            #tutoriales = paginator1.page(paginator1.num_pages)
+
+        return self.render_to_response(
+            self.get_context_data(
+                hoy=date.today(),
+                tipos=tipos,
+                tutoriales=tutoriales,
+                #paginator1=paginator1,
+                anor=date.today().year
+            )
+        )
+
+def get_ajaxBuscarTutorial(request, *args, **kwargs): 
+    buscar = request.GET.get('buscar', None)
+    if not buscar:
+        return JsonResponse(data={'result': '', 'errors': 'No encuentro tutorial con "'+buscar+'"'})
+    else:
+        tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
+        if tutoriales:
+            return JsonResponse(data=tutoriales, safe=False)
+        else: 
+            return JsonResponse(data={'result': '', 'errors': 'No encuentro tutoriales con "'+buscar+'"'})
+
+
+class TipoTutorialView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/tutoriales.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        tipos = Tipos_tutoriales.objects.all().order_by('nombre')
+        try:
+            tutoriales = Tutoriales.objects.filter(tipo=kwargs["pk"])[:25]
+            paginator1 = Paginator(tutoriales, 6)
+        except:
+            tutoriales = Tutoriales.objects.filter(tipo=kwargs["pk"])[:25]
+            paginator1 = Paginator(tutoriales, 6)
+        try:
+            page2 = int(request.GET.get('page', '1'))
+        except ValueError:
+            page2 = 1
+        try:
+            tutoriales = paginator1.page(page2)
+        except (EmptyPage, InvalidPage):
+            tutoriales = paginator1.page(paginator1.num_pages)
+
+        return self.render_to_response(
+            self.get_context_data(
+                hoy=date.today(),
+                tipos=tipos,
+                tutoriales=tutoriales,
+                paginator1=paginator1,
+                anor=date.today().year
+            )
+        )
+
+
 class ReglamentoView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/reglamento.html'
     login_url='generales:login'
@@ -198,7 +274,6 @@ class ContactoView(LoginRequiredMixin, generic.TemplateView):
 
 def get_ajaxEnviar(request, *args, **kwargs): 
     msg = request.GET.get('msg', None)
-    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", msg)
     if not msg:
         return JsonResponse(data={'result': '', 'errors': 'No ha escrito mensage alguno.'})
     else:

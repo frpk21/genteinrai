@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Elmuro, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir, Miempresa, Bienestar, Ocupacional, Reglamento
+from .models import Elmuro, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir, Miempresa, Bienestar, Ocupacional, Reglamento, Tipos_tutoriales, Tutoriales
 from django.contrib.admin.widgets import AutocompleteSelect
 
 class SedesAdmin(admin.ModelAdmin):
@@ -52,6 +52,20 @@ class NoticiasAdmin(admin.ModelAdmin):
         obj.autor = request.user
         obj.save()
 
+class TutorialesAdmin(admin.ModelAdmin):
+    list_display = ('tipo', 'titulo', 'subtitulo', 'urlvideo', 'archivo_video', )
+    fields = ['tipo', 'titulo', 'subtitulo', 'urlvideo', 'archivo_video', 'activo',]
+    exclude = ('autor', 'modificado',)
+    ordering = ('tipo', 'titulo', )
+    search_fields = ('titulo','tipo')
+    list_filter = ('modificado', 'tipo', 'titulo')
+
+    class Meta:
+        model = Tutoriales
+
+    def save_model(self, request, obj, form, change):
+        obj.autor = request.user
+        obj.save()
 
 class MiempresaAdmin(admin.ModelAdmin):
     list_display = ('nuestra_empresa', 'mision', 'vision', 'objetivo', 'principios', 'himno_letra', 'himno_audio', )
@@ -73,3 +87,5 @@ admin.site.register(Bienestar)
 admin.site.register(Ocupacional)
 admin.site.register(Reglamento)
 admin.site.register(Elmuro)
+admin.site.register(Tipos_tutoriales)
+admin.site.register(Tutoriales, TutorialesAdmin)
