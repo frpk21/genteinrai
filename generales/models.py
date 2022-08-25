@@ -190,9 +190,10 @@ class Ocupacional(ClaseModelo):
 
 class Reglamento(models.Model):
     reglamento = RichTextField("Reglamento Interno de Trabajo", max_length=200000, blank=True, null=True)
- 
+    sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=1, null=False, blank=False)
+
     def __str__(self):
-        return '{}'.format(self.id)
+        return '{}'.format(self.sede.nombre_sede)
 
     class Meta:
         verbose_name_plural = "Reglamento"        
