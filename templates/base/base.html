@@ -84,7 +84,7 @@
 							<li><a href="{% url 'generales:contacto' %}">El Muro</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="#">{{ user.first_name }} {{ user.last_name }}</a></li>
+							<li class="active"><a href="{% url 'generales:logout' %}"><i class="material-icons">person</i>{{ user.first_name }} {{ user.last_name }}</a></li>
 						</ul>
 					</div>
 				</nav>
@@ -209,8 +209,7 @@
                     </div>
                     <div class="right_text">
                         <ul class="list">
-                            <li class="active"><a href="#">Eng</a></li>
-                            <li><a href="#">Fra</a></li>
+                            <li class="active"><a href="{% url 'generales:logout' %}"><i class="material-icons">person</i>{{ user.first_name }} {{ user.last_name }}</a></li>
                         </ul>
                     </div>
                 </div>
