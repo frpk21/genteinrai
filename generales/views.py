@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa
+from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento
 from .forms import SuscribirseForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -125,16 +125,16 @@ class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
         ) 
 
 class ReglamentoView(LoginRequiredMixin, generic.TemplateView):
-    template_name='generales/ocupacional.html'
+    template_name='generales/reglamento.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        ocupacional = Ocupacional.objects.all().order_by('modificado')
+        reglamento = Reglamento.objects.all().last()
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                ocupacional=ocupacional
+                reglamento=reglamento
             )
         ) 
 
