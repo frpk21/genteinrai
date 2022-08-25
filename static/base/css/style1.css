@@ -3789,6 +3789,20 @@ i:before {
   top: -40px;
 }
 
+#small-dialog1 {
+  background: #000;
+  text-align: left;
+  max-width: 800px;
+  margin: 40px auto;
+  position: relative;
+  overflow: visible;
+}
+
+#small-dialog1 .mfp-close {
+  right: -40px;
+  top: -40px;
+}
+
 /**
  * Fade-move animation for second dialog
  */
