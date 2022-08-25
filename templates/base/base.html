@@ -84,14 +84,14 @@
 							<li><a href="{% url 'generales:contacto' %}">El Muro</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="#">Eng</a></li>
+							<li class="active"><a href="#">{{ user.first_name }} {{ user.last_name }}</a></li>
 						</ul>
 					</div>
 				</nav>
 			</header>
 			<header class="full_header dark_menu mobile_menu">
         		<div class="float-left">
-        			<a class="logo" href="#"><img src="/static/base/img/inrai/logo_40.png" width="125px" alt=""><img src="/static/base/img/inrai/logo_40.png" width="125px" alt=""></a>
+        			<a class="logo" href="{% url 'generales:miempresa' %}"><img src="/static/base/img/inrai/logo_40.png" width="125px" alt=""><img src="/static/base/img/inrai/logo_40.png" width="125px" alt=""></a>
         			<a class="phone" href="tel:3689565656"><i class="lnr lnr-phone-handset"></i> (+070) 3689 56 56 56</a>
         		</div>
         		<div class="float-right">
