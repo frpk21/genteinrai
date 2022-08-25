@@ -22,16 +22,11 @@
                         {% for item in tutoriales %}
                             <div class="blog_side_item">
                                 <div class="media">
-                                    <div class="d-flex">
-                                        {% if item.archivo_video|length > 0 %}
-                                            <div class="embed-responsive embed-responsive-16by9">
-                                                <iframe class="embed-responsive" src="{{item.archivo_video.url}}"></iframe>
-                                            </div>
-                                        {% else %}
-                                            <div class="embed-responsive embed-responsive-16by9">
-                                                <iframe class="embed-responsive" src="{{item.urlvideo.url}}"></iframe>
-                                            </div>
-                                        {% endif %}
+                                    <div class="d-flex">{{item.urlvideo}}
+                                        <video src="{{item.urlvideo.url}}" width=320  height=240 controls poster="">
+                                            Lo sentimos. Este vídeo no puede ser reproducido en tu navegador.<br>
+                                            La versión descargable está disponible en <a href="URL">Enlace</a>. 
+                                            </video>
                                     </div>
                                     <div class="media-body">
                                         <a class="tag" href="#">{{item.tipo.nombre}}</a>
