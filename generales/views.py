@@ -125,16 +125,16 @@ class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
         ) 
 
 class ElmuroView(LoginRequiredMixin, generic.TemplateView):
-    template_name='generales/ocupacional.html'
+    template_name='generales/elmuro.html'
     login_url='generales:login'
     def get(self, request, *args, **kwargs):
-        elmuro = Elmuro.objects.all().order_by('-modificado')
+        elmuro = Elmuro.objects.all().order_by('-modificado')[:50]
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                ocupacional=ocupacional
+                elmuro=elmuro
             )
         ) 
 
