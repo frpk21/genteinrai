@@ -170,16 +170,50 @@ class TutorialesView(LoginRequiredMixin, generic.TemplateView):
             )
         )
 
-def get_ajaxBuscarTutorial(request, *args, **kwargs): 
+
+
+def ajax_update(request, *args, **kwargs):
     buscar = request.GET.get('buscar', None)
-    if not buscar:
-        return JsonResponse(data={'result': '', 'errors': 'Debe ingresar una palabra clave!'})
+    tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar.upper()).order_by('-id')
+    if tutoriales:
+        return JsonResponse(data={'buscar': buscar, 'errors': ''})
     else:
-        tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar.upper()).order_by('-id')
-        if tutoriales:
-            return JsonResponse(data={'result': buscar, 'errors': ''})
-        else: 
-            return JsonResponse(data={'result': '', 'errors': 'No encuentro tutoriales con la palabra "'+buscar+'"'})
+        return JsonResponse(data={'buscar': '', 'errors': 'No encontre tutoriales..'})
+    #return render(request, "generales/tutoriales.html", {'tutoriales': tutoriales, 'paginator1': paginator1, 'hoy':date.today(), 'tipos':Tipos_tutoriales.objects.all().order_by('nombre'), 'anor': date.today().year})
+
+
+
+class UpdtutorialesView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/tutoriales.html'
+    login_url='generales:login'
+
+    def get(self, request, *args, **kwargs):
+        buscar = kwargs["pk"]
+        try:
+            tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar.upper()).order_by('-id')
+            paginator1 = Paginator(tutoriales, 6)
+        except:
+            tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar.upper()).order_by('-id')
+            paginator1 = Paginator(tutoriales, 6)
+        try:
+            page2 = int(request.GET.get('page', '1'))
+        except ValueError:
+            page2 = 1
+        try:
+            tutoriales = paginator1.page(page2)
+        except (EmptyPage, InvalidPage):
+            tutoriales = paginator1.page(paginator1.num_pages)
+
+        return self.render_to_response(
+            self.get_context_data(
+                hoy=date.today(),
+                tipos=Tipos_tutoriales.objects.all().order_by('nombre'),
+                tutoriales=tutoriales,
+                paginator1=paginator1,
+                anor=date.today().year
+            )
+        )
+
 
 
 class TipoTutorialView(LoginRequiredMixin, generic.TemplateView):

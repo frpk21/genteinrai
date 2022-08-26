@@ -19,7 +19,6 @@ urlpatterns = [
     path('noticias/', views.NoticiasView.as_view(), name='noticias'),
     url((r'^politica/$'), views.PoliticaView, name="politica"),
     path('busca/', views.get_ajaxBuscar, name='find_post'),
-    path('buscar_tutorial/', views.get_ajaxBuscarTutorial, name='find_tutorial'),
     path('comp/', views.MiempresaView.as_view(), name='miempresa'),
     path('comp/principios', views.PrincipiosView.as_view(), name='principios'),
     path('comp/himno', views.HimnoView.as_view(), name='himno'),
@@ -32,6 +31,8 @@ urlpatterns = [
     path('contacto', views.ContactoView.as_view(), name='contacto'),
     path('enviar/', views.get_ajaxEnviar, name='enviar'),
     path('tutoriales/tp/<int:pk>', views.TipoTutorialView.as_view(), name='tipo_tutorial'),
+    path('update/', views.ajax_update, name='upd'),
+    path('update/tutoriales/<str:pk>', views.UpdtutorialesView.as_view(), name='updtuto'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

@@ -18,7 +18,7 @@
         <div class="container">
             <div class="row row_direction">
                 <div class="col-lg-8 offset-lg-1">
-                    <div class="blog_side_inner">
+                    <div class="blog_side_inner" id="id_data">
                         {% if tutoriales %}
                             {% for item in tutoriales %}
                                 <div class="blog_side_item">
@@ -113,7 +113,7 @@
                                 <h3>Buscar</h3>
                             </div>
                             <div class="input-group">
-                                <input type="text" id="id_buscar" class="form-control" placeholder="Ingrese palabra clave....." onchange="buscar_tutorial()">
+                                <input type="text" id="id_buscar" class="form-control" value='' placeholder="Ingrese palabra clave....." onchange="buscar_tutorial()">
                             </div>
                         </aside>
                         <aside class="l_widget categories_wd">
@@ -150,24 +150,22 @@
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
             var datos = {'buscar':r};
-            $.get( "{% url 'generales:find_tutorial' %}", datos, function( data ) {
-                //console.log(data);
+            $.get( "{% url 'generales:upd' %}", datos, function( data ) {
                 if (data.errors){
-                    swal({
-                        title: data.errors,
-                        showCancelButton: false,
-                        showConfirmButton: true,
-                        confirmButtonClass: 'btn btn-success',
-                        buttonsStyling: false
-                    }).catch(swal.noop);
-                    $("#id_buscar").val('');
-                    document.getElementById("id_buscar").focus();
+                  swal({
+                      title: data.errors,
+                      showCancelButton: false,
+                      confirmButtonClass: 'btn btn-success',
+                      //cancelButtonClass: 'btn btn-danger',
+                      buttonsStyling: false
+                  }).catch(swal.noop);
                 }
-                else {
-                    
-                }
-    
-            } );
+              else {
+                var url = "{% url 'generales:updtuto' 123 %}";
+                var id = data.buscar;
+                document.location.href = url.replace('123', id);
+              }
+            } )
         }
     </script>
 
