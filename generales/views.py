@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.edit import CreateView
@@ -173,13 +173,13 @@ class TutorialesView(LoginRequiredMixin, generic.TemplateView):
 def get_ajaxBuscarTutorial(request, *args, **kwargs): 
     buscar = request.GET.get('buscar', None)
     if not buscar:
-        return JsonResponse(data={'result': '', 'errors': 'No encuentro tutorial con "'+buscar+'"'})
+        return JsonResponse(data={'result': '', 'errors': 'Debe ingresar una palabra clave!'})
     else:
-        tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar, subtitulo__icontains=buscar).order_by('-id')
+        tutoriales = Tutoriales.objects.filter(titulo__icontains=buscar.upper()).order_by('-id')
         if tutoriales:
-            return JsonResponse(data=tutoriales, safe=False)
+            return JsonResponse(data={'result': buscar, 'errors': ''})
         else: 
-            return JsonResponse(data={'result': '', 'errors': 'No encuentro tutoriales con "'+buscar+'"'})
+            return JsonResponse(data={'result': '', 'errors': 'No encuentro tutoriales con la palabra "'+buscar+'"'})
 
 
 class TipoTutorialView(LoginRequiredMixin, generic.TemplateView):

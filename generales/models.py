@@ -184,7 +184,8 @@ class Tipos_tutoriales(ClaseModelo):
         super(Tipos_tutoriales, self).save()
 
     class Meta:
-        verbose_name_plural = "Tipos de Tutoriales"
+        verbose_name_plural = "Temas de Tutoriales"
+
 
 class Tutoriales(ClaseModelo):
     tipo = models.ForeignKey(Tipos_tutoriales, on_delete=models.CASCADE, default=0, null=False, blank=False)
@@ -193,7 +194,7 @@ class Tutoriales(ClaseModelo):
     urlvideo = models.CharField('URL Youtube', blank=True, null=True, default='', max_length=200)
     archivo_video = models.FileField("Archivo de Video", upload_to="tutoriales/", blank=True, null=True, default='')
     autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,default='')
-    
+
     def __str__(self):
         return '{}'.format(self.titulo)
 
