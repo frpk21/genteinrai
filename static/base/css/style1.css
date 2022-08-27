@@ -39,6 +39,36 @@ Table of Content:
 /*----------------------------------------------------*/
 /*font Variables*/
 /*Color Variables*/
+
+/*CUSTOM VARIABLES HERE*/
+ 
+.modal { 
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--black);
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.35s ease-in;
+}
+/*CUSTOM VARIABLES HERE*/
+ 
+.modal-dialog {
+  position: relative;
+  max-width: 800px;
+  max-height: 80vh;
+  border-radius: 5px;
+  background: var(--white);
+  overflow: auto;
+  cursor: default;
+}
 @import url("https://fonts.googleapis.com/css?family=Heebo:100,300,400,500,700,900|Oswald:300,400,500,600,700");
 .col-md-offset-right-1, .col-lg-offset-right-1 {
   margin-right: 8.33333333%;
