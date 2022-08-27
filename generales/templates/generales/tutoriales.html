@@ -23,21 +23,20 @@
                             {% for item in tutoriales %}
                                 <div class="blog_side_item">
                                
-                                      {% if item.urlvideo %}
-                                                        okk 111111111111111111
-                                                        
-                                                        <video width="320" height="240" controls>
-                                                            <source src="{{tem.urlvideo}}" >
-                                                          Your browser does not support the video tag.
-                                                          </video>
-                                       {% elif item.archivo_video %}
-                                                        okkk 222222222222222222222222222
-                                                        <video width="320" height="240" controls>
-                                                            <source src="{{item.archivo_video.url}}" type="video/mp4">
-                                                          Your browser does not support the video tag.
-                                                          </video>
-                                     {% endif %}
+                                      
                                     <div class="media">
+                                        {% if item.urlvideo %}
+                                            <video width="320" height="240" controls>
+                                                <source src="{{tem.urlvideo}}" >
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        {% elif item.archivo_video %}
+                                            <video width="320" height="240" controls>
+                                                <source src="{{item.archivo_video.url}}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        {% endif %}
+                                        <!--
                                         <div class="d-flex">
                                             <div class="slider_text_box">
                                                 <div id="small-dialog1" class="zoom-anim-dialog mfp-hide embed-responsive embed-responsive-16by9">               
@@ -70,7 +69,7 @@
                                                     data-elementdelay="0.05"><a class="popup-with-move-anim" href="#small-dialog1"><img src="/static/base/img/icon/video-2.png" alt=""></a>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="media-body">
                                             <a class="tag" href="#">{{item.tipo.nombre}}</a>
                                             <a href="#"><h4>{{item.titulo}}</h4></a>
