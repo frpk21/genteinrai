@@ -5,7 +5,6 @@
 
 {% block contenido %}
 
-{% load humanize %}
 
     <section class="breadcrumb_link">
         <div class="container">
@@ -22,19 +21,15 @@
                         {% if tutoriales %}
                             {% for item in tutoriales %}
                                 <div class="blog_side_item">
-                               
-                                      
-                                    <div class="media">
+                                    <div class="media">                                        
                                         {% if item.urlvideo %}
-                                            <video width="320" height="240" controls>
-                                                <source src="{{tem.urlvideo}}" >
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#modal99">
+                                                <img src="/static/base/img/icon/video-2.png" alt="">
+                                            </button>
                                         {% elif item.archivo_video %}
-                                            <video width="320" height="240" controls>
-                                                <source src="{{item.archivo_video.url}}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#id-modalvideo2">
+                                                <img src="/static/base/img/icon/video-2.png" alt="">
+                                            </button>
                                         {% endif %}
                                         <!--
                                         <div class="d-flex">
@@ -86,39 +81,41 @@
                         {% endif %}
                     </div>
                     <nav aria-label="Page navigation example" class="pagination_inner">
-                        <ul class="pagination">
-                            <li>
-                                {% if tutoriales.has_previous %}
-                                    <a href="?search={{ search }}&page={{ tutoriales.previous_page_number }}">
-                                        Ant.
-                                    </a>
-                                {% else %}
-                                    <span>Ant.</span>
-                                {% endif %}
-                            </li>					  
-                                {% for page_number in paginator1.page_range %}
-                                    {% if page_number ==  tutoriales.number%}
-                                        <li class="page-item active">
-                                            <span >{{ page_number }}</span>
-                                        </li>
+                        <div class="col-lg-12 align-items-center">
+                            <ul class="pagination">
+                                <li>
+                                    {% if tutoriales.has_previous %}
+                                        <a href="?search={{ search }}&page={{ tutoriales.previous_page_number }}">
+                                            Ant.
+                                        </a>
                                     {% else %}
-                                        <li class="page-item">
-                                            <a href="?search={{ search }}&page={{ page_number }}" class="page-link">
-                                                {{ page_number }}
-                                            </a>
-                                        </li>
+                                        <span>Ant.</span>
                                     {% endif %}
-                                {% endfor %}
-                            <li>
-                                {% if tutoriales.has_next %}
-                                    <a href="?search={{ search }}&page={{ tutoriales.next_page_number }}">
-                                        Sig.
-                                    </a>
-                                {% else %}
-                                    <span>Sig.</span>
-                                {% endif %}
-                            </li>
-                        </ul>
+                                </li>					  
+                                    {% for page_number in paginator1.page_range %}
+                                        {% if page_number ==  tutoriales.number%}
+                                            <li class="page-item active">
+                                                <span >{{ page_number }}</span>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a href="?search={{ search }}&page={{ page_number }}" class="page-link">
+                                                    {{ page_number }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                <li>
+                                    {% if tutoriales.has_next %}
+                                        <a href="?search={{ search }}&page={{ tutoriales.next_page_number }}">
+                                            Sig.
+                                        </a>
+                                    {% else %}
+                                        <span>Sig.</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
                     </nav>
                 </div>
                 <div class="col-lg-3">
@@ -162,6 +159,9 @@
     </section>
     
     <script>
+        function abrir_modal() {
+            $('#id-modalvideo2').modal('show');
+        }
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
             var datos = {'buscar':r};
