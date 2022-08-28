@@ -68,7 +68,7 @@
                                             <div style="display: none">
                                                 <input type="text" id="id-titulo-{{ forloop.counter0 }}" value="{{item.titulo}}" readonly>
                                                 <input type="text" id="id-video-{{ forloop.counter0 }}" value="" readonly>
-                                                <input type="text" id="id-url-{{ forloop.counter0 }}" value="{{item.urlvideo}}" readonly>
+                                                <input type="text" id="id-url-{{ forloop.counter0 }}" value="{{item.urlvideo|safe}}" readonly>
                                             </div>
                                         {% elif item.archivo_video %}
                                             <a href="javascript:modal_open2({{ forloop.counter0 }})">
