@@ -80,7 +80,11 @@
                                                 <input type="text" id="id-url-{{ forloop.counter0 }}" value="" readonly>
                                             </div>
                                         {% else %}
-                                            <img src="/static/base/img/sin_datos.jpg" height="300px" alt="">
+                                            <div class="col-4"></div>
+                                            <div class="col-4">
+                                                <img src="/static/base/img/sin_datos.jpg" height="300px" alt="">
+                                            </div>
+                                            <div class="col-4"></div>
                                         {% endif %}
                                         <div class="media-body">
                                             <a class="tag" href="#">{{item.tipo.nombre}}</a>
