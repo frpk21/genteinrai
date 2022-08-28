@@ -6,7 +6,32 @@
 {% block contenido %}
 
 {% load humanize %}
-
+<div class="modal-dialog" >
+    <div class="modal-content" style="margin-top:105px;background: #779baf6e;">
+        <div class="modal-header">
+            <h1 style="color: rgb(253, 5, 5); background: white; border: 1px; border-radius: 7px; text-align: center; font-size: 14px;">EN VIVO</h1>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="portada" id="portada">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-12" style="color: rgb(255, 123, 0);">
+                        <h1 class="text-center" style="font-size:30px;">{{regresivo.nombre}}</h1>
+                    </div>
+                </div>
+            </div>
+            <h3 class="text-center" style="color: rgb(255, 123, 0);">Inicia en..</h3><br />
+            <div id="cuenta"></div>
+            <div id="img_vivo"></div>
+            <div class="col-sm-12" style="text-align: center;">
+                <img class="max-s-full" src="/static/base/images/elsonajero/logo-blanco.png" width="170px" alt="LOGO">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+</div>
     <section class="breadcrumb_link">
         <div class="container">
             <a href="{% url 'generales:home' %}">Mi Empresa</a>
@@ -25,6 +50,15 @@
                                
                                       
                                     <div class="media">
+                                        {% if item.urlvideo %}
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#modal99">
+                                                <img src="/static/base/img/icon/video-2.png" alt="">
+                                            </button>
+                                        {% elif item.archivo_video %}
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#id-modalvideo2">
+                                                <img src="/static/base/img/icon/video-2.png" alt="">
+                                            </button>
+                                        {% endif %}
                                         {% if item.urlvideo %}
                                             <video width="320" height="240" controls>
                                                 <source src="{{tem.urlvideo}}" >
