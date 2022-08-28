@@ -3,28 +3,47 @@
 
 {% load static %}
 
-{% block contenido %}
-
-{% load humanize %}
-<div class="modal fade bd-example-modal-lg" style="height:600px; " id="id-modalvideo2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content" style="border: 0px; margin-top:105px;background: #e2e2e200;">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">2{{item.titulo}}</h5>
+{% block modal %}
+    <div class="modal fade bd-example-modal-lg" style="height:600px; " id="id-modalvideo1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border: 0px; margin-top:105px;background: #e2e2e200;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{item.titulo}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
+            </div>
+            <div class="modal-body">
+                <video  controls width="100%">
+                    <source src="{{item.urlvideo}}">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         </div>
-        <div class="modal-body">
-            <video  controls width="100%">
-                <source src="{{item.archivo_video.url}}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
         </div>
-        
-      </div>
     </div>
-</div>
+    <div class="modal fade bd-example-modal-lg" style="height:600px; " id="id-modalvideo2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border: 0px; margin-top:105px;background: #e2e2e200;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{item.titulo}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <video  controls width="100%">
+                    <source src="{{item.archivo_video.url}}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock modal %}
+
+{% block contenido %}
+
     <section class="breadcrumb_link">
         <div class="container">
             <a href="{% url 'generales:home' %}">Mi Empresa</a>
@@ -33,6 +52,7 @@
     </section>
 
     <section class="blog_sidebar_area">
+        
         <div class="container">
             <div class="row row_direction">
                 <div class="col-lg-8 offset-lg-1">
@@ -40,11 +60,9 @@
                         {% if tutoriales %}
                             {% for item in tutoriales %}
                                 <div class="blog_side_item">
-                               
-                                      
                                     <div class="media">
                                         {% if item.urlvideo %}
-                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#modal99">
+                                            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#id-modalvideo1">
                                                 <img src="/static/base/img/icon/video-2.png" alt="">
                                             </button>
                                         {% elif item.archivo_video %}
@@ -52,51 +70,6 @@
                                                 <img src="/static/base/img/icon/video-2.png" alt="">
                                             </button>
                                         {% endif %}
-                                        {% if item.urlvideo %}
-                                            <video width="320" height="240" controls>
-                                                <source src="{{tem.urlvideo}}" >
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        {% elif item.archivo_video %}
-                                            <video width="320" height="240" controls>
-                                                <source src="{{item.archivo_video.url}}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        {% endif %}
-                                        <!--
-                                        <div class="d-flex">
-                                            <div class="slider_text_box">
-                                                <div id="small-dialog1" class="zoom-anim-dialog mfp-hide embed-responsive embed-responsive-16by9">               
-                                                    {% if item.urlvideo %}
-                                                        okk 111111111111111111
-                                                        
-                                                        <iframe width="560" height="300" src="{{item.urlvideo}}" style="position: absolute;top: 0;left: 0;bottom: 0;right: 0;width: 100%;height: 100%;" scrolling="no" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
-                                                    {% elif item.archivo_video %}
-                                                        okkk 222222222222222222222222222
-                                                        <iframe width="560" height="300" src="{{item.archivo_video.url}}" style="position: absolute;top: 0;left: 0;bottom: 0;right: 0;width: 100%;height: 100%;" scrolling="no" autoplay="no" frameborder="0" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
-                                                    {% endif %}
-                                                </div>
-                                                <div class="tp-caption video" 
-                                                    data-x="['right']" data-hoffset="['0','0','15']"  
-                                                    data-y="[middle']" data-voffset="[-100']"
-                                                    data-textAlign="['center']"
-                                                    data-fontsize="['100', '100','100','100']"
-                                                    data-lineheight="['100','100', '100','100']"
-                                                    data-height="none"
-                                                    data-whitespace="nowrap"
-                                                    data-transform_idle="o:1;"
-                                                    data-transform_in="y:[-100%];x:0;z:0;rX:0deg;rY:0deg;rZ:0deg;sX:1;sY:1;skX:0;skY:0;s:1000;e:Power2.easeInOut;" 
-                                                    data-transform_out="y:[100%];s:1000;e:Power2.easeInOut;s:1000;e:Power2.easeInOut;" 
-                                                    data-mask_in="x:0px;y:0px;s:inherit;e:inherit;" 
-                                                    data-mask_out="x:inherit;y:inherit;s:inherit;e:inherit;" 
-                                                    data-start="2000" 
-                                                    data-splitin="none" 
-                                                    data-splitout="none" 
-                                                    data-responsive_offset="on" 
-                                                    data-elementdelay="0.05"><a class="popup-with-move-anim" href="#small-dialog1"><img src="/static/base/img/icon/video-2.png" alt=""></a>
-                                                </div>
-                                            </div>
-                                        </div>-->
                                         <div class="media-body">
                                             <a class="tag" href="#">{{item.tipo.nombre}}</a>
                                             <a href="#"><h4>{{item.titulo}}</h4></a>
@@ -187,7 +160,8 @@
             </div>
         </div>
     </section>
-    
+
+
     <script>
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
@@ -212,3 +186,5 @@
     </script>
 
 {% endblock contenido %}
+
+

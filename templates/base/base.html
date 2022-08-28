@@ -140,7 +140,9 @@
 					<div class="copy"><p>©{{anor}} <a href="http://inrai.net/" target="_blank">INRAI</a>. Todos los derechos reservados.</p></div>
 				</div>
 			</div>
+
             {% block contenido %}Blank{% endblock contenido %}
+
             <footer class="footer_area">
                 <div class="f_logo">
                     <img class="img-fluid" src="/static/base/img/inrai/logo-inrai-blanco-400px.png" width="150px" alt="">
@@ -233,7 +235,10 @@
                     </div>
                 </div>
             </div>
+            
         </div>
+        
+        {% block modal %}{% endblock modal %}
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="/static/base/js/jquery-3.3.1.min.js"></script>
