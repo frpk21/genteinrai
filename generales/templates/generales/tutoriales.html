@@ -65,19 +65,25 @@
                                             <a href="javascript:modal_open1({{ forloop.counter0 }})">
                                                 <img src="/static/base/img/icon/video-2.png" alt="">
                                             </a>
+                                            <div style="display: none">
+                                                <input type="text" id="id-titulo-{{ forloop.counter0 }}" value="{{item.titulo}}" readonly>
+                                                <input type="text" id="id-video-{{ forloop.counter0 }}" value="" readonly>
+                                                <input type="text" id="id-url-{{ forloop.counter0 }}" value="{{item.urlvideo}}" readonly>
+                                            </div>
                                         {% elif item.archivo_video %}
                                             <a href="javascript:modal_open2({{ forloop.counter0 }})">
                                                 <img src="/static/base/img/icon/video-2.png" alt="">
                                             </a>
+                                            <div style="display: none">
+                                                <input type="text" id="id-titulo-{{ forloop.counter0 }}" value="{{item.titulo}}" readonly>
+                                                <input type="text" id="id-video-{{ forloop.counter0 }}" value="{{item.archivo_video.url}}" readonly>
+                                                <input type="text" id="id-url-{{ forloop.counter0 }}" value="" readonly>
+                                            </div>
                                         {% endif %}
                                         <div class="media-body">
                                             <a class="tag" href="#">{{item.tipo.nombre}}</a>
                                             <a href="#"><h4>{{item.titulo}}</h4></a>
-                                            <div style="display: none">
-                                                <input type="text" id="id-titulo-{{ forloop.counter0 }}" value="{{item.titulo}}" readonly>
-                                                <input type="text" id="id-video-{{ forloop.counter0 }}" value="{{item.archivo_video}}" readonly>
-                                                <input type="text" id="id-url-{{ forloop.counter0 }}" value="{{item.urlvideo}}" readonly>
-                                            </div>
+                                            
                                             <a class="time" href="#">{{item.modificado.date}}</a>
                                             <p>{{item.subtitulo}}</p>
                                             <p id="id-archivo-{{ forloop.counter0 }}">{{item.archivo_video}}</p>
@@ -179,7 +185,7 @@
             var r = $("#id-titulo-"+String(item)).val();
             var v = $("#id-video-"+String(item)).val();
             $('#id-modal2-titulo').val(r);
-            $("#id-modal2-video").html('<source src='+v+'.url></source>' );
+            $("#id-modal2-video").html('<source src='+v+'></source>' );
             $('#id-modalvideo2').modal('show')
         }
 
