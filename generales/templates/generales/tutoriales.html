@@ -14,8 +14,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <video  controls width="100%">
-                    <source id='id-modal1-video' src=''>
+                <video id='id-modal1-video' controls width="100%">
+                    <source src=''>
                     Your browser does not support the video tag.
                 </video>
             </div>
@@ -32,8 +32,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <video  controls width="100%">
-                        <source id='id-modal2-video' src='' type='video/mp4'>
+                    <video id='id-modal2-video' controls width="100%">
+                        <source src='' type='video/mp4'>
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -170,18 +170,16 @@
     <script>
         function modal_open1(item) {
             var r = $("#id-titulo-"+String(item)).val();
-            var v = $("#id-video-"+String(item)).val();
             var u = $("#id-url-"+String(item)).val();
             $('#id-modal1-titulo').val(r);
-            $("#id-modal1-video").html('<source src=u></source>' );
+            $("#id-modal1-video").html('<source src='+u+'></source>' );
             $('#id-modalvideo1').modal('show')
         }
         function modal_open2(item) {
             var r = $("#id-titulo-"+String(item)).val();
             var v = $("#id-video-"+String(item)).val();
-            var u = $("#id-url-"+String(item)).val();
             $('#id-modal2-titulo').val(r);
-            $("#id-modal2-video").html('<source src=v></source>' );
+            $("#id-modal2-video").html('<source src='+v+'></source>' );
             $('#id-modalvideo2').modal('show')
         }
 
