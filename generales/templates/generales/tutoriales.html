@@ -79,11 +79,12 @@
                                                 <input type="text" id="id-video-{{ forloop.counter0 }}" value="{{item.archivo_video.url}}" readonly>
                                                 <input type="text" id="id-url-{{ forloop.counter0 }}" value="" readonly>
                                             </div>
+                                        {% else %}
+                                            <img src="/static/base/img/sin_datos.jpg" height="300px" alt="">
                                         {% endif %}
                                         <div class="media-body">
                                             <a class="tag" href="#">{{item.tipo.nombre}}</a>
                                             <a href="#"><h4>{{item.titulo}}</h4></a>
-                                            
                                             <a class="time" href="#">{{item.modificado.date}}</a>
                                             <p>{{item.subtitulo}}</p>
                                             <p id="id-archivo-{{ forloop.counter0 }}">{{item.archivo_video}}</p>
