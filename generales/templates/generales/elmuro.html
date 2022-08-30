@@ -43,17 +43,11 @@
             <div class="col-lg-8">
                 <div class="right_contact_form">
                     {% for item in elmuro %}
-                        <div class="blog_g_item">
-                            <div class="press_img_item">
-                                <div class="">
-                                    <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
-                                </div>
-                                <div class="date">
-                                    <a href="#">{{item.modificado}}</a>
-                                    <i class="ion-record"></i>
-                                    <a href="#">El Muro</a>
-                                </div>
-                                <a href="#"><h4>{{item.titulo}}</h4></a>
+                        <div class="card" style="width: 18rem;">
+                            <img class="card-img-top" src="{{item.foto.url}}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{item.titulo}}<i class="ion-record"></i>{{item.modificado}}</h5>
+                                <p class="card-text">{{item.detalle}}</p>
                             </div>
                         </div>
                     {% endfor %}
