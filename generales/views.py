@@ -142,7 +142,7 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
         )
 
     def post(self, request, *args, **kwargs):
-        form_com = ComentarioForm(request.POST)
+        form_com = ComentarioForm(request.POST, request.FILES)
         if form_com.is_valid():
             post = form_com.save(commit=False)
             post.save()
