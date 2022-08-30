@@ -688,18 +688,14 @@
             <h2>+GENTE INRAI</h2>
         </div>
         <div class="testimonials_slider owl-carousel">
-            <div class="item">
-                <div class="test_item">
-                    <h4><span>Ryan Betthalyn</span> / Director at Chobham Manor</h4>
-                    <p>Sed elit quam, iaculis sed semper sit amet udin vitae nibh. Rubino staveuo at magna akal semperFusce commodo molestie luctus.Lorem ipsum ulicon Dolor tusima olatiup.</p>
+            {% for item in elmuro %}
+                <div class="item">
+                    <div class="test_item">
+                        <h4><span>{{ item.autor.user.first_name }} {{ item.autor.user.last_name }}</span> / {{item.autor.user.profile.sede.nombre_sede}}</h4>
+                        <p>{{item.detalle}}</p>
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="test_item">
-                    <h4><span>Bobs Hanley</span> / Owner of Edden Villa</h4>
-                    <p>Paras stalor ed elit quam, iaculis sed semper sit amet udin vitae nibh. at magna akal semperFusce commodo molestie luctus.Lorem ipsum vitalun Dolor tusima olatiup aculis sed semper sit ame</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
         <div class="clients_slider owl-carousel">
             <div class="item">

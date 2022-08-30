@@ -45,12 +45,14 @@ class Home(LoginRequiredMixin, generic.TemplateView):
     def get(self, request, *args, **kwargs):
         sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
         noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
+        elmuro = Elmuro.objects.all().order_by('-modificado')[:7]
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
                 noticias=noticias,
+                elmuro=elmuro,
                 sedes=sedes
             )
         )
@@ -145,6 +147,7 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
         form_com = ComentarioForm(request.POST, request.FILES)
         if form_com.is_valid():
             post = form_com.save(commit=False)
+            post.autor = self.request.user
             post.save()
             form_com = ComentarioForm()
             return HttpResponseRedirect(self.success_url)
