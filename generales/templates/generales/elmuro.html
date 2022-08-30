@@ -8,45 +8,62 @@
 <section class="about_image">
     <img class="img-fluid" src="/static/base/img/elmuro.jpg"  alt="">
 </section>
-<section class="our_projects_area">
-    <div class="container">
-        <div class="projects_tt">
-            <div class="float-md-left">
-                <div class="main_title white">
-                    <h2>el muro</h2>
+<section class="contact_area2" style="padding-top: 15px;">
+    <div class="float-md-left">
+        <div class="main_title white">
+            <h2>el muro</h2>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="left_contact_details" style="padding-top: 15px;">
+                    <h4 >
+                        Deje un Comentario
+                    </h4>
+                    <form method="POST" class="post-form" >{% csrf_token %}
+                        <div class="form-group col-md-8">
+                            <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
+                            {{ form_com.titulo }}
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label class="control-label" for="inputSuccess">Comentario</label>
+                            {{ form_com.detalle}}
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label class="control-label" for="inputSuccess">Foto</label>
+                            {{ form_com.foto }}
+                        </div>
+                        <div fa-caret-right>
+                            <button type="submit" class="save btn btn-default size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">Publicar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <!--<div class="float-md-right">
-                <ul class="isotope_fillter list">
-                    <li class="active" data-filter="*"><a href="#">Bienestar</a></li>
-                    <li data-filter=".news"><a href="#">Noticias</a></li>
-                    <li data-filter=".event"><a href="#">Eventos</a></li>
-                    <li data-filter=".insp"><a href="#">Medio ambiente</a></li>
-                </ul>
-            </div>-->
-        </div>
-    </div>
-    <div class="blog_grid_inner">
-        <div class="row blog_inner_fillter">
-            {% for item in elmuro %}
-                <div class="col-lg-3 col-md-4 col-sm-6 news">
-                    <div class="blog_g_item">
-                        <div class="press_img_item">
-                            <div class="press_img">
-                                <img class="img-fluid" src="{{item.foto.url}}" alt="">
-                            </div>
-                            <div class="date">
-                                <a href="#">{{item.modificado}}</a>
-                                <i class="ion-record"></i>
-                                <a href="#">El Muro</a>
-                            </div>
-                            <a href="#"><h4>{{item.titulo}}</h4></a>
+            <div class="col-lg-8">
+                <div class="right_contact_form">
+                    {% for item in elmuro %}
+
+                            <div class="blog_g_item">
+                                <div class="press_img_item">
+                                    <div class="press_img">
+                                        {% if item.foto.url|length > 0 %}
+                                            <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
+                                        {% endif %}
+                                    </div>
+                                    <div class="date">
+                                        <a href="#">{{item.modificado}}</a>
+                                        <i class="ion-record"></i>
+                                        <a href="#">El Muro</a>
+                                    </div>
+                                    <a href="#"><h4>{{item.titulo}}</h4></a>
+                                </div>
+
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    </div>
 </section>
 
 {% endblock contenido %}

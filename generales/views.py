@@ -17,7 +17,7 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
 from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales
-from .forms import SuscribirseForm
+from .forms import SuscribirseForm, ComentarioForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
@@ -127,17 +127,27 @@ class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
 class ElmuroView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/elmuro.html'
     login_url='generales:login'
+    success_url=reverse_lazy("generales:elmuro")
+
     def get(self, request, *args, **kwargs):
         elmuro = Elmuro.objects.all().order_by('-modificado')[:50]
         self.object = None
-
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                elmuro=elmuro
+                elmuro=elmuro,
+                form_com = ComentarioForm()
             )
-        ) 
-
+        )
+        
+    def post(self, request, *args, **kwargs):
+        form_com = ComentarioForm(request.POST)
+        if form_com.is_valid():
+            post = form_com.save(commit=False)
+            post.save()
+            form_com = ComentarioForm()
+            
+            return HttpResponseRedirect(self.success_url)
 
 class TutorialesView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/tutoriales.html'

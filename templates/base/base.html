@@ -86,7 +86,8 @@
                             <li><a href="{% url 'generales:tutoriales' %}">Tutoriales</a></li>
 						</ul>
 						<ul class="nav navbar-nav navbar-right">
-							<li class="active"><a href="{% url 'generales:logout' %}">{{ user.first_name }} {{ user.last_name }}</a></li>
+							<li ><a href="{% url 'generales:logout' %}"><img src="/static/base/img/icon/person.png" width="25px"></a></li>
+                            <li class="active"><a href="{% url 'generales:logout' %}">{{ user.first_name }} {{ user.last_name }}</a></li>
 						</ul>
 					</div>
 				</nav>
@@ -214,7 +215,8 @@
                     </div>
                     <div class="right_text">
                         <ul class="list">
-                            <li class="active"><a href="{% url 'generales:logout' %}">{{ user.first_name }} {{ user.last_name }}</a></li>
+                            <li><a href="{% url 'generales:logout' %}"><img src="/static/base/img/icon/person.png" width="25px"></a></li>
+                            <li><a href="{% url 'generales:logout' %}">{{ user.first_name }} {{ user.last_name }}</a></li>
                         </ul>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
 from django import forms
 from datetime import date
 from django.forms.models import inlineformset_factory
-from .models import Suscribir, Noticias
+from .models import Suscribir, Elmuro
 from tempus_dominus.widgets import DatePicker, TimePicker, DateTimePicker
 from ckeditor.widgets import CKEditorWidget
 
@@ -24,6 +24,37 @@ class SuscribirseForm(forms.ModelForm):
         if not email:
             raise forms.ValidationError("Email Requerido")
         return email
+
+
+class ComentarioForm(forms.ModelForm):
+
+    class Meta:
+        model = Elmuro
+        fields = ('titulo', 'detalle', 'foto')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
+    def clean_titulo(self):
+        titulo = self.cleaned_data["titulo"]
+        if not titulo:
+            raise forms.ValidationError("Titulo Requerido")
+        return titulo
+
+    def clean_detalle(self):
+        detalle = self.cleaned_data["detalle"]
+        if not detalle:
+            raise forms.ValidationError("Comentario Requerido")
+        return detalle
+
+    def clean_foto(self):
+        foto = self.cleaned_data["foto"]
+        return foto
+
 
 hoy = date.today()
 mes_actual = hoy.month
