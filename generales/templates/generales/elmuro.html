@@ -48,7 +48,7 @@
                         {% if item.foto|length > 0 %}
                             <img class="card-img-top" src="{{item.foto.url}}">
                         {% else %}
-                            <img class="card-img-top" src="/static/base/img/sin_datos.jpg" width="120px;">
+                            <img class="card-img-top" src="/static/base/img/sin_datos.jpg" width="50%">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title" style="color: black;">{{item.titulo}}</h5><span class="date" style="font-size: 10px"><i class="ion-calendar"></i> {{item.modificado}}</span>
