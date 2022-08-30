@@ -57,9 +57,6 @@ class ComentarioForm(forms.ModelForm):
             raise forms.ValidationError("Comentario Requerido")
         return detalle
 
-    def clean_foto(self):
-        foto = self.cleaned_data["foto"]
-        return foto
 
 
 hoy = date.today()
