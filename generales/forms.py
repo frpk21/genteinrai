@@ -11,7 +11,7 @@ class SuscribirseForm(forms.ModelForm):
     class Meta:
         model = Suscribir
         fields = ('email',)
-    foto = forms.FileField()
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
@@ -31,7 +31,8 @@ class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Elmuro
         fields = ('titulo', 'detalle', 'foto')
-
+    foto = forms.FileField()
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
