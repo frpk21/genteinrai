@@ -22,7 +22,7 @@
                 <h4 >
                     Deje un Comentario
                 </h4>
-                <form name="form1" enctype="multipart/form-data" method="POST" class="post-form" action="">{% csrf_token %}
+                <form enctype="multipart/form-data" method="POST" class="post-form" action="">{% csrf_token %}
                     <div class="form-group col-md-8">
                         <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
                         {{ form_com.titulo }}
