@@ -144,8 +144,6 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
         form_com = ComentarioForm(request.POST)
         if form_com.is_valid():
             post = form_com.save(commit=False)
-            if not post.foto:
-                post.foto="/static/base/img/icon/person2.png"
             post.save()
             form_com = ComentarioForm()
             
