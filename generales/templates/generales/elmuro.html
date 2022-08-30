@@ -10,40 +10,11 @@
 <section class="about_image">
     <img class="img-fluid" src="/static/base/img/elmuro.jpg"  alt="">
 </section>
-<section class="contact_area2" style="padding-top: 15px;">
-    <div class="float-md-left" style="padding-left: 15px;">
-        <div class="main_title white">
-            <h2>el muro</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="left_contact_details" style="padding-top: 15px;">
-                <h4 >
-                    Deje un Comentario
-                </h4>
-                <form enctype="multipart/form-data" method="POST" class="post-form" action="">{% csrf_token %}
-                    <div class="form-group col-md-8">
-                        <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
-                        {{ form_com.titulo }}
-                    </div>
-                    <div class="form-group col-md-8">
-                        <label class="control-label" for="inputSuccess">Comentario</label>
-                        {{ form_com.detalle }}
-                    </div>
-                    <div class="form-group col-md-8">
-                        <label class="control-label" for="inputSuccess">Foto</label>
-                        {{ form_com.foto }}
-                    </div>
-                    <div fa-caret-right>
-                        <button type="submit" class="save btn btn-default size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">Publicar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<section class="blog_sidebar_area">
+    <div class="container">
         <div class="row row_direction">
             <div class="col-lg-8 offset-lg-1">
-                <div class="blog_side_inner"> 
+                <div class="blog_side_inner">
                     {% for item in elmuro %}
                         <div class="blog_side_item">
                             <div class="media">
@@ -59,6 +30,32 @@
                             </div>
                         </div>
                     {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="left_sidebar_area">
+                    <aside class="l_widget search_wd">
+                        <div class="l_wd_title">
+                            <h3>El Muro</h3>
+                        </div>
+                        <form enctype="multipart/form-data" method="POST" class="post-form" action="">{% csrf_token %}
+                            <div class="form-group col-md-8">
+                                <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
+                                {{ form_com.titulo }}
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label class="control-label" for="inputSuccess">Comentario</label>
+                                {{ form_com.detalle }}
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label class="control-label" for="inputSuccess">Foto</label>
+                                {{ form_com.foto }}
+                            </div>
+                            <div fa-caret-right>
+                                <button type="submit" class="save btn btn-default size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">Publicar</button>
+                            </div>
+                        </form>
+                    </aside>
                 </div>
             </div>
         </div>
