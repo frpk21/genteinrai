@@ -53,6 +53,8 @@ class ComentarioForm(forms.ModelForm):
 
     def clean_foto(self):
         foto = self.cleaned_data["foto"]
+        if not foto:
+            foto="/static/base/icon/person2.png"
         return foto
 
 
