@@ -43,22 +43,20 @@
             <div class="col-lg-8">
                 <div class="right_contact_form">
                     {% for item in elmuro %}
-
-                            <div class="blog_g_item">
-                                <div class="press_img_item">
-                                    <div class="press_img">
-                                        {% if item.foto.url|length > 0 %}
-                                            <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
-                                        {% endif %}
-                                    </div>
-                                    <div class="date">
-                                        <a href="#">{{item.modificado}}</a>
-                                        <i class="ion-record"></i>
-                                        <a href="#">El Muro</a>
-                                    </div>
-                                    <a href="#"><h4>{{item.titulo}}</h4></a>
+                        <div class="blog_g_item">
+                            <div class="press_img_item">
+                                <div class="press_img">{{item.foto.url}}
+                                    {% if item.foto.url|length > 0 %}
+                                        <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
+                                    {% endif %}
                                 </div>
-
+                                <div class="date">
+                                    <a href="#">{{item.modificado}}</a>
+                                    <i class="ion-record"></i>
+                                    <a href="#">El Muro</a>
+                                </div>
+                                <a href="#"><h4>{{item.titulo}}</h4></a>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
