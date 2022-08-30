@@ -41,10 +41,11 @@
                 </form>
             </div>
         </div>
-        {% for item in elmuro %}
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="right_contact_form">                        
+        <div class="right_contact_form"> 
+            {% for item in elmuro %}
+                <div class="row">
+                    <div class="col-lg-4">
+                                           
                         <div class="card" style="width: 18rem;">
                             {% if item.foto|length > 0 %}
                                 <img class="card-img-top" src="{{item.foto.url}}">
@@ -56,10 +57,10 @@
                                 <p class="card-text">{{item.detalle|safe}}</p>
                             </div>
                         </div>
+                    
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="right_contact_form">
+                    <div class="col-lg-4">
+       
                         <div class="card" style="width: 18rem;">
                             {% if item.foto|length > 0 %}
                                 <img class="card-img-top" src="{{item.foto.url}}">
@@ -71,10 +72,11 @@
                                 <p class="card-text">{{item.detalle|safe}}</p>
                             </div>
                         </div>
+       
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </section>
 
