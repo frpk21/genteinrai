@@ -44,7 +44,8 @@ class ComentarioForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
-    
+        self.fields['foto'].required = False
+        
     def clean_titulo(self):
         titulo = self.cleaned_data["titulo"]
         if not titulo:
