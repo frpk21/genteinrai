@@ -2,9 +2,13 @@
 from django import forms
 from datetime import date
 from django.forms.models import inlineformset_factory
+
+from genteinrai.settings import CKEDITOR_CONFIGS
 from .models import Suscribir, Elmuro
 from tempus_dominus.widgets import DatePicker, TimePicker, DateTimePicker
 from ckeditor.widgets import CKEditorWidget
+from ckeditor.fields import RichTextField
+from django.conf import settings
 
 class SuscribirseForm(forms.ModelForm):
     
@@ -27,19 +31,20 @@ class SuscribirseForm(forms.ModelForm):
 
 
 class ComentarioForm(forms.ModelForm):
-
+    foto = forms.FileField()
+    detalle=forms.CharField(widget=CKEditorWidget())
+    
     class Meta:
         model = Elmuro
         fields = ('titulo', 'detalle', 'foto')
-    foto = forms.FileField()
-    detalle = forms.RichTextField()
-    def __init__(self, *args, **kwargs):
+    
+    def __init__(self, *args, **kwargs): 
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
-
+    
     def clean_titulo(self):
         titulo = self.cleaned_data["titulo"]
         if not titulo:

@@ -5,6 +5,8 @@
 
 {% block contenido %}
 
+{% load humanize %}
+
 <section class="about_image">
     <img class="img-fluid" src="/static/base/img/elmuro.jpg"  alt="">
 </section>
@@ -14,50 +16,49 @@
             <h2>el muro</h2>
         </div>
     </div>
-
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="left_contact_details" style="padding-top: 15px;">
-                    <h4 >
-                        Deje un Comentario
-                    </h4>
-                    <form method="POST" class="post-form" >{% csrf_token %}
-                        <div class="form-group col-md-8">
-                            <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
-                            {{ form_com.titulo }}
-                        </div>
-                        <div class="form-group col-md-8">
-                            <label class="control-label" for="inputSuccess">Comentario</label>
-                            {{ form_com.detalle}}
-                        </div>
-                        <div class="form-group col-md-8">
-                            <label class="control-label" for="inputSuccess">Foto</label>
-                            {{ form_com.foto }}
-                        </div>
-                        <div fa-caret-right>
-                            <button type="submit" class="save btn btn-default size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">Publicar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="right_contact_form">
-                    {% for item in elmuro %}
-                        <div class="card" style="width: 18rem;">
-                            {% if item.foto|length > 0 %}
-                                <img class="card-img-top" src="{{item.foto.url}}">
-                            {% else %}
-                                <img class="card-img-top" src="/static/base/img/sin_datos.jpg">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="color: black;">{{item.titulo}}</h5><span class="date" style="font-size: 10px"><i class="ion-record"></i>{{item.modificado}}</span>
-                                <p class="card-text">{{item.detalle}}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="left_contact_details" style="padding-top: 15px;">
+                <h4 >
+                    Deje un Comentario
+                </h4>
+                <form name="form1" enctype="multipart/form-data" method="POST" class="post-form" action="">{% csrf_token %}
+                    <div class="form-group col-md-8">
+                        <label class="control-label" for="inputSuccess">T&iacute;tulo</label>
+                        {{ form_com.titulo }}
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label class="control-label" for="inputSuccess">Comentario</label>
+                        {{ form_com.detalle }}
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label class="control-label" for="inputSuccess">Foto</label>
+                        {{ form_com.foto }}
+                    </div>
+                    <div fa-caret-right>
+                        <button type="submit" class="save btn btn-default size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">Publicar</button>
+                    </div>
+                </form>
             </div>
         </div>
+        <div class="col-lg-8">
+            <div class="right_contact_form">
+                {% for item in elmuro %}
+                    <div class="card" style="width: 18rem;">
+                        {% if item.foto|length > 0 %}
+                            <img class="card-img-top" src="{{item.foto.url}}">
+                        {% else %}
+                            <img class="card-img-top" src="/static/base/img/sin_datos.jpg" width="120px;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: black;">{{item.titulo}}</h5><span class="date" style="font-size: 10px"><i class="ion-calendar"></i> {{item.modificado}}</span>
+                            <p class="card-text">{{item.detalle|safe}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </section>
 
 {% endblock contenido %}

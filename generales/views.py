@@ -23,6 +23,7 @@ from django.contrib.auth import authenticate, login
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.utils.html import format_html
 from io import StringIO
 import os, time
 
