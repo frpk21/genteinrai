@@ -44,9 +44,13 @@
                 <div class="right_contact_form">
                     {% for item in elmuro %}
                         <div class="card" style="width: 18rem;">
-                            <img class="card-img-top" src="{{item.foto.url}}" alt="Card image cap">
+                            {% if item.foto|length > 0 %}
+                                <img class="card-img-top" src="{{item.foto.url}}">
+                            {% else %}
+                                <img class="card-img-top" src="/static/base/img/sin_datos.jpg">
+                            {% endif %}
                             <div class="card-body">
-                                <h5 class="card-title">{{item.titulo}}<i class="ion-record"></i>{{item.modificado}}</h5>
+                                <h5 class="card-title date">{{item.titulo}}<i class="ion-record"></i>{{item.modificado}}</h5>
                                 <p class="card-text">{{item.detalle}}</p>
                             </div>
                         </div>
