@@ -692,7 +692,7 @@
                 <div class="item">
                     <div class="test_item">
                         <h4><span>{{ item.autor.user.first_name }} {{ item.autor.user.last_name }}</span> / {{item.autor.user.profile.sede.nombre_sede}}</h4>
-                        <p>{{item.detalle}}</p>
+                        <p>{{item.detalle|safe}}</p>
                     </div>
                 </div>
             {% endfor %}
