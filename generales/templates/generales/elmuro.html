@@ -43,9 +43,8 @@
         </div>
         <div class="right_contact_form"> 
             {% for item in elmuro %}
-                <div class="row">
-                    <div class="col-lg-6">
-                                           
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">          
                         <div class="card" style="width: 18rem;">
                             {% if item.foto|length > 0 %}
                                 <img class="card-img-top" src="{{item.foto.url}}">
@@ -57,22 +56,6 @@
                                 <p class="card-text">{{item.detalle|safe}}</p>
                             </div>
                         </div>
-                    
-                    </div>
-                    <div class="col-lg-6">
-       
-                        <div class="card" style="width: 18rem;">
-                            {% if item.foto|length > 0 %}
-                                <img class="card-img-top" src="{{item.foto.url}}">
-                            {% else %}
-                                <img class="card-img-top" src="/static/base/img/sin_datos.jpg" width="50%" height="50%">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title" style="color: black;">{{item.titulo}}</h5><span class="date" style="font-size: 10px"><i class="ion-calendar"></i> {{item.modificado}}</span>
-                                <p class="card-text">{{item.detalle|safe}}</p>
-                            </div>
-                        </div>
-       
                     </div>
                 </div>
             {% endfor %}
