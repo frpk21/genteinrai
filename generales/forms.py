@@ -32,7 +32,7 @@ class ComentarioForm(forms.ModelForm):
         model = Elmuro
         fields = ('titulo', 'detalle', 'foto')
     foto = forms.FileField()
-    
+    detalle = forms.RichTextField()
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
