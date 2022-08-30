@@ -45,10 +45,8 @@
                     {% for item in elmuro %}
                         <div class="blog_g_item">
                             <div class="press_img_item">
-                                <div class="press_img">{{item.foto.url}}
-                                    {% if item.foto.url|length > 0 %}
-                                        <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
-                                    {% endif %}
+                                <div class="press_img">
+                                    <img class="img-fluid" src="{{item.foto.url}}" alt="" width="300px">
                                 </div>
                                 <div class="date">
                                     <a href="#">{{item.modificado}}</a>
