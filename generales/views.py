@@ -147,7 +147,7 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
             post.save()
             form_com = ComentarioForm()
             
-            return HttpResponseRedirect(self.success_url)
+        return HttpResponseRedirect(self.success_url)
 
 class TutorialesView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/tutoriales.html'
