@@ -225,7 +225,7 @@ class Ocupacional(ClaseModelo):
 class Elmuro(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
     detalle = RichTextField("Detalle", max_length=15000, blank=True, null=True)
-    foto = models.FileField("Foto (417 x 269px)", upload_to="fotos/", blank=True, null=True, default='')
+    foto = models.FileField("Foto (417 x 269px)", upload_to="elmuro/", blank=True, null=True, default='')
  
     def __str__(self):
         return '{}'.format(self.titulo)
