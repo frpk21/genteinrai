@@ -45,16 +45,20 @@
 {% block contenido %}
 
     <section class="breadcrumb_link">
-        <div class="container">
+        <div class="container" style="background-image: url('/static/base/img/Gradient-10.jpg')">
             <a href="{% url 'generales:home' %}">Mi Empresa</a>
             <a href="#">Tutoriales</a>
+            <div clss="col-lg-8 offset-lg-1" style="padding-top: 10px;">
+                <img src="/static/base/img/tutorial.png" height="200px" alt="">
+            </div>
         </div>
     </section>
-
-    <section class="blog_sidebar_area">
+    
+    <section class="blog_sidebar_area" style="padding-top: 15px;">
+        
         <div class="container">
             <div class="row row_direction">
-                <div class="col-lg-8 offset-lg-1" style="background: rgba(192, 247, 218, 0.436); border: 5px; padding-top: 10px;">
+                <div class="col-lg-8 offset-lg-1" style="padding-top: 10px;">
                     <div class="blog_side_inner">
                         {% if tutoriales %}
                             {% for item in tutoriales %}
@@ -158,7 +162,7 @@
                             </ul>
                         </aside>
 
-                        <aside class="l_widget tags_wd">
+                        <!--<aside class="l_widget tags_wd">
                             <div class="l_wd_title">
                                 <h3>Tags</h3>
                             </div>
@@ -169,7 +173,7 @@
                                 <a href="#">Clean</a>
                                 <a href="#">WordPress</a>
                             </div>
-                        </aside>
+                        </aside>-->
                     </div>
                 </div>
             </div>

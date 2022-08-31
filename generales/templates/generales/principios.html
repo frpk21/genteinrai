@@ -5,8 +5,14 @@
 
 {% block contenido %}
 
-    <section class="about_image">
-        <img class="img-fluid" src="/static/base/img/inrai/principios.jpg"  alt="">
+    <section class="breadcrumb_link">
+        <div class="container" style="background-image: url('/static/base/img/principios.jpg')">
+            <a href="{% url 'generales:home' %}">Mi Empresa</a>
+            <a href="#">Principios y fundamentos</a>
+            <div clss="col-lg-8 offset-lg-1" style="padding-top: 10px;">
+                <img src="/static/base/img/principios.png" height="200px" alt="">
+            </div>
+        </div>
     </section>
     <section>
         <div class="container">
