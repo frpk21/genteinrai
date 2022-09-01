@@ -46,13 +46,13 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         #sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
         #noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
         #elmuro = Elmuro.objects.all().order_by('-modificado')[:7]
-        home = Home.objects.all().last()
+        home1 = Home.objects.all().last()
         self.object = None
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
-                home=home
+                home1=home1
             )
         )
 
