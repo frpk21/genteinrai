@@ -178,11 +178,11 @@ class TutorialesView(LoginRequiredMixin, generic.TemplateView):
     def get(self, request, *args, **kwargs):
         tipos = Tipos_tutoriales.objects.all().order_by('nombre')
         try:
-            tutoriales = Tutoriales.objects.all()[:25]
-            paginator1 = Paginator(tutoriales, 6)
+            tutoriales = Tutoriales.objects.all()[:24]
+            paginator1 = Paginator(tutoriales, 4)
         except:
-            tutoriales = Tutoriales.objects.all()[:25]
-            paginator1 = Paginator(tutoriales, 6)
+            tutoriales = Tutoriales.objects.all()[:24]
+            paginator1 = Paginator(tutoriales, 4)
         try:
             page2 = int(request.GET.get('page', '1'))
         except ValueError:
