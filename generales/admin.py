@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Elmuro, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir, Miempresa, Bienestar, Ocupacional, Reglamento, Tipos_tutoriales, Tutoriales, Home
+from .models import Elmuro, Sedes, Profile, Cargos, Funcionarios, Noticias, Suscribir, Miempresa, Bienestar, Ocupacional, Reglamento, Tipos_tutoriales, Tutoriales, Home1
 from django.contrib.admin.widgets import AutocompleteSelect
 
 class SedesAdmin(admin.ModelAdmin):
@@ -87,6 +87,6 @@ admin.site.register(Bienestar)
 admin.site.register(Ocupacional)
 admin.site.register(Reglamento)
 admin.site.register(Elmuro)
-admin.site.register(Home)
+admin.site.register(Home1)
 admin.site.register(Tipos_tutoriales)
 admin.site.register(Tutoriales, TutorialesAdmin)

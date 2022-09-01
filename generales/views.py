@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales
+from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales, Home1
 from .forms import SuscribirseForm, ComentarioForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -46,7 +46,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         #sedes = Sedes.objects.all().order_by('ciudad', 'nombre_sede')
         #noticias = Noticias.objects.filter(modificado__lt=date.today())[:25]
         #elmuro = Elmuro.objects.all().order_by('-modificado')[:7]
-        home1 = Home.objects.all().last()
+        home1 = Home1.objects.all().last()
         self.object = None
 
         return self.render_to_response(

@@ -153,7 +153,7 @@ class Miempresa(models.Model):
     class Meta:
         verbose_name_plural = "Nuestra Empresa"
 
-class Home(models.Model):
+class Home1(models.Model):
     nuestra_empresa = RichTextField("Nuestra Empresa", max_length=3000, blank=True, null=True)
     comunicaciones = RichTextField("Comunicaciones", max_length=3000, blank=True, null=True)
     marketing = RichTextField("Marketing", max_length=3000, blank=True, null=True)
