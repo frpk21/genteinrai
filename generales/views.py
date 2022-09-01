@@ -133,15 +133,34 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
     success_url=reverse_lazy("generales:elmuro")
 
     def get(self, request, *args, **kwargs):
-        elmuro = Elmuro.objects.all().order_by('-modificado')[:50]
         self.object = None
+        tipos = Tipos_tutoriales.objects.all().order_by('nombre')
+        try:
+            elmuro = Elmuro.objects.all().order_by('-modificado')[:25]
+            paginator1 = Paginator(elmuro, 6)
+        except:
+            elmuro = Elmuro.objects.all().order_by('-modificado')[:25]
+            paginator1 = Paginator(elmuro, 6)
+        try:
+            page2 = int(request.GET.get('page', '1'))
+        except ValueError:
+            page2 = 1
+        try:
+            elmuro = paginator1.page(page2)
+        except (EmptyPage, InvalidPage):
+            elmuro = paginator1.page(paginator1.num_pages)
+
         return self.render_to_response(
             self.get_context_data(
-                anor=date.today().year,
+                hoy=date.today(),
+                tipos=tipos,
                 elmuro=elmuro,
-                form_com = ComentarioForm()
+                paginator1=paginator1,
+                form_com = ComentarioForm(),
+                anor=date.today().year
             )
         )
+
 
     def post(self, request, *args, **kwargs):
         form_com = ComentarioForm(request.POST, request.FILES)

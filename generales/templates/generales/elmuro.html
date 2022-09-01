@@ -37,6 +37,41 @@
                         </div>
                     {% endfor %}
                 </div>
+                <nav aria-label="Page navigation example" class="pagination_inner">
+                    <ul class="pagination">
+                        <li>
+                            {% if elmuro.has_previous %}
+                                <a href="?search={{ search }}&page={{ elmuro.previous_page_number }}">
+                                    Ant.
+                                </a>
+                            {% else %}
+                                <span>Ant.</span>
+                            {% endif %}
+                        </li>					  
+                            {% for page_number in paginator1.page_range %}
+                                {% if page_number ==  elmuro.number%}
+                                    <li class="page-item active">
+                                        <span >{{ page_number }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a href="?search={{ search }}&page={{ page_number }}" class="page-link">
+                                            {{ page_number }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        <li>
+                            {% if elmuro.has_next %}
+                                <a href="?search={{ search }}&page={{ elmuro.next_page_number }}">
+                                    Sig.
+                                </a>
+                            {% else %}
+                                <span>Sig.</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </nav>
             </div>
             <div class="col-lg-3">
                 <div class="left_sidebar_area">
