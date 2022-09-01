@@ -154,16 +154,16 @@ class Miempresa(models.Model):
         verbose_name_plural = "Nuestra Empresa"
 
 class Home(models.Model):
-    nuestra_empresa = RichTextField("Nuestra Empresa", max_length=15000, blank=True, null=True)
-    comunicaciones = RichTextField("Mision", max_length=15000, blank=True, null=True)
-    marketing = RichTextField("Vision", max_length=15000, blank=True, null=True)
-    entretenimiento = RichTextField("Objetivo General", max_length=15000, blank=True, null=True)
+    nuestra_empresa = RichTextField("Nuestra Empresa", max_length=3000, blank=True, null=True)
+    comunicaciones = RichTextField("Comunicaciones", max_length=3000, blank=True, null=True)
+    marketing = RichTextField("Marketing", max_length=3000, blank=True, null=True)
+    entretenimiento = RichTextField("Entretenimiento", max_length=3000, blank=True, null=True)
    
     def __str__(self):
         return '{}'.format(self.id)
 
     class Meta:
-        verbose_name_plural = "Pagina principal"
+        verbose_name_plural = "Home"
 
 class Bienestar(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
