@@ -257,44 +257,7 @@
 		});
 	});
 
-    function modal_open1(item) {
-        var r = $("#id-titulo-"+String(item)).val();
-        var u = $("#id-url-"+String(item)).val();
-        $('#id-modal1-titulo').val(r);
-        $("#id-modal1-video").html('<source src='+u+'></source>' );
-        $('#id-modalvideo1').modal('show')
-    }
-    function modal_open2(item) {
-        var r = $("#id-titulo-"+String(item)).val();
-        var v = $("#id-video-"+String(item)).val();
-        $('#id-modal2-titulo').val(r);
-        $("#id-modal2-video").html('<source src='+v+'></source>' );
-        let video = document.getElementById("id-modal2-video");
-        video.load();
-        video.play();
-        $('#id-modalvideo2').modal('show')
-    }
-
-    function buscar_tutorial() {
-        var r = $("#id_buscar").val();
-        var datos = {'buscar':r};
-        $.get( "{% url 'generales:upd' %}", datos, function( data ) {
-            if (data.errors){
-              swal({
-                  title: data.errors,
-                  showCancelButton: false,
-                  confirmButtonClass: 'btn btn-success',
-                  //cancelButtonClass: 'btn btn-danger',
-                  buttonsStyling: false
-              }).catch(swal.noop);
-            }
-          else {
-            var url = "{% url 'generales:updtuto' 123 %}";
-            var id = data.buscar;
-            document.location.href = url.replace('123', id);
-          }
-        } )
-    }
+	
 	/*----------------------------------------------------*/
     /*  Explor Room Slider
     /*----------------------------------------------------*/
