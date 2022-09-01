@@ -137,10 +137,10 @@ class ElmuroView(LoginRequiredMixin, generic.TemplateView):
         tipos = Tipos_tutoriales.objects.all().order_by('nombre')
         try:
             elmuro = Elmuro.objects.all().order_by('-modificado')[:25]
-            paginator1 = Paginator(elmuro, 6)
+            paginator1 = Paginator(elmuro, 4)
         except:
             elmuro = Elmuro.objects.all().order_by('-modificado')[:25]
-            paginator1 = Paginator(elmuro, 6)
+            paginator1 = Paginator(elmuro, 4)
         try:
             page2 = int(request.GET.get('page', '1'))
         except ValueError:
