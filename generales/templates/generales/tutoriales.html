@@ -198,7 +198,9 @@
             $('#id-modalvideo2').modal('show')
         }
         $("#id-modal2-video").on("hidden.bs.modal", function () {
-            video.stop();
+            var media = $("#id-modal2-video").get(0);
+            media.pause();
+            media.currentTime = 0;
         });
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
