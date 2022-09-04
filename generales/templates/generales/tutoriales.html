@@ -197,8 +197,10 @@
             video.play();
             $('#id-modalvideo2').modal('show')
         }
-        $("#id-modal2-titulo").on('hidden.bs.modal', function () {
-            alert("Esta accion se ejecuta al cerrar el modal")
+        $(document).ready(function(){
+            $("#id-modal2-titulo").on('hidden.bs.modal', function () {
+                alert("Esta accion se ejecuta al cerrar el modal")
+            });
         });
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
