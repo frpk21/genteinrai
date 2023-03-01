@@ -187,6 +187,7 @@
             $("#id-modal1-video").html('<source src='+u+'></source>' );
             $('#id-modalvideo1').modal('show')
         }
+
         function modal_open2(item) {
             var r = $("#id-titulo-"+String(item)).val();
             var v = $("#id-video-"+String(item)).val();
@@ -197,10 +198,8 @@
             video.play();
             $('#id-modalvideo2').modal('show')
         }
-        $(document).on('hide.bs.modal','#id-modalvideo2', function () {
-                alert('');
-        //Do stuff here
-        });
+
+
         function buscar_tutorial() {
             var r = $("#id_buscar").val();
             var datos = {'buscar':r};
@@ -221,6 +220,7 @@
               }
             } )
         }
+        
     </script>
 
 {% endblock contenido %}
