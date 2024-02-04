@@ -90,7 +90,7 @@ class Funcionarios(models.Model):
     fecha_ultimo_carnet = models.DateField('Fecha de emisión del último carnet', blank=True, null=False)
     hora_entrada = models.TimeField('Hora de entrada (inicio jornada)', default='07:00', blank=False, null=False)
     hora_salida_almuerzo = models.TimeField('Hora de salida almuerzo', default='12:00', blank=True, null=False)
-    hora_entrada_de_almuerzo = models.TimeField('Hora entreda de almuerzo', default='14:00', blank=True, null=False)
+    hora_entrada_de_almuerzo = models.TimeField('Hora entrada de almuerzo', default='14:00', blank=True, null=False)
     hora_salida = models.TimeField('Hora salida (terminación jornada)',  default='18:00',blank=False, null=False)
 
     def __str__(self):
