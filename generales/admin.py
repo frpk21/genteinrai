@@ -28,9 +28,9 @@ class CargosAdmin(admin.ModelAdmin):
 
 
 class FuncionariosAdmin(admin.ModelAdmin):
-    list_display = ('nombre1','nombre2','apellido1','apellido2','foto','sede','direccion','cargo','celular','email',)
-    ordering = ['sede','apellido1','nombre1',]
-    search_fields = ('nombre1','nombre2','apellido1','apellido2',)
+    list_display = ('nombre1','nombre2','apellido1','apellido2','cedula','foto','sede','direccion','cargo','celular','email','tipo_contrato', 'fecha_inicio',)
+    ordering = ['sede','apellido1','apellido2','nombre1',]
+    search_fields = ('cedula','nombre1','nombre2','apellido1','apellido2',)
     list_filter = ('sede',)
 
     class Meta:

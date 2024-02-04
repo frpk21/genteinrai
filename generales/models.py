@@ -20,8 +20,6 @@ class ClaseModelo(models.Model):
     class Meta:
         abstract=True
 
-from generales.models import ClaseModelo
-
 class Sedes(ClaseModelo):
     sede = models.IntegerField(default=0, null=False, blank=False)
     nombre_sede = models.CharField(blank=False, null=False, max_length=100, default="")
@@ -39,7 +37,7 @@ class Sedes(ClaseModelo):
     def __str__(self):
         return '{}-{}'.format(self.id, self.nombre_sede)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre_sede = self.nombre_sede.upper()
         self.director = self.director.upper()
         self.ciudad = self.ciudad.upper()
@@ -54,7 +52,7 @@ class Profile(models.Model):
     foto = models.FileField("Archivo con Foto del Usuario", upload_to="fotos/", blank=False, null=False, default="")
     sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=0, null=False, blank=False)
  
-    def save(self):
+    def save(self, *args, **kwargs):
         super(Profile, self).save()
 
     class Meta:
@@ -66,7 +64,7 @@ class Cargos(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(Cargos, self).save()
 
@@ -78,6 +76,7 @@ class Funcionarios(models.Model):
     nombre2 = models.CharField('Segundo nombre', default='', blank=True, null=True, max_length=50)
     apellido1 = models.CharField('Primer apellido', default='', blank=False, null=False, max_length=50)
     apellido2 = models.CharField('Segundo apellido', default='', blank=True, null=True, max_length=50)
+    cedula = models.CharField('Cedula No. ', default='', blank=False, null=False, max_length=50)
     fecha_nacimiento = models.DateField('Fecha de nacimiento', blank=False, null=False)
     foto = models.FileField("Archivo con Foto del Funcionario (200 x 200px)", upload_to="fotos/", blank=False, null=False, default="")
     sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=0, null=False, blank=False)
@@ -85,11 +84,15 @@ class Funcionarios(models.Model):
     cargo = models.ForeignKey(Cargos, on_delete=models.CASCADE, default=0, null=False, blank=False)
     celular = models.CharField('Número de celular', default='', blank=True, null=True, max_length=60)
     email = models.CharField('E-Mail', blank=True, null=True, max_length=200, default="" )
+    CHOICES = ((0,'Indefinido'),(1,'Fijo'))
+    tipo_contrato = models.IntegerField(choices=CHOICES, default=0, null=False, blank=False)
+    fecha_inicio = models.DateField('Fecha de inicio de labores', blank=False, null=False)
+    fecha_ultimo_carnet = models.DateField('Fecha de ultumo carnet', blank=True, null=False)
 
     def __str__(self):
         return '{} {} {} {}'.format(self.nombre1, self.nombre2, self.apellido1, self.apellido2)
  
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre1 = self.nombre1.upper()
         self.nombre2 = self.nombre2.upper()
         self.apellido1 = self.apellido1.upper()
@@ -120,7 +123,7 @@ class Noticias(ClaseModelo):
     def __str__(self):
         return '{}-{}'.format(self.titulo, self.autor.profile.sede.nombre_sede)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.titulo)
         super(Noticias, self).save()
 
@@ -175,7 +178,7 @@ class Bienestar(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.titulo)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.titulo = self.titulo.upper()
         super(Bienestar, self).save()
 
@@ -190,7 +193,7 @@ class Tipos_tutoriales(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.nombre)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.nombre = self.nombre.upper()
         super(Tipos_tutoriales, self).save()
 
@@ -209,7 +212,7 @@ class Tutoriales(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.titulo)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.titulo = self.titulo.upper()
         super(Tutoriales, self).save()
 
@@ -225,7 +228,7 @@ class Ocupacional(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.titulo)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.titulo = self.titulo.upper()
         super(Ocupacional, self).save()
 
@@ -242,7 +245,7 @@ class Elmuro(ClaseModelo):
     def __str__(self):
         return '{}'.format(self.titulo)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.slug = slugify(self.titulo)
         super(Elmuro, self).save()
 

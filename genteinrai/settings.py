@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_filters',
     'generales',
     'ckeditor',
     'multiselectfield',
@@ -162,8 +163,8 @@ LOGIN_REDIRECT_URL = '/'
 
 # cuando el usuario salga (logout), el programa lo manda al login.html
 LOGOUT_REDIRECT_URL = '/login/'
-
-#try:
-#    exec(open(os.path.join(BASE_DIR, 'genteinrai/settings_local.py')).read())
-#except IOError:
-#    raise Exception('error reading local settings')
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+try:
+    exec(open(os.path.join(BASE_DIR, 'genteinrai/settings_local.py')).read())
+except IOError:
+    raise Exception('error reading local settings')
