@@ -87,7 +87,7 @@ class Funcionarios(models.Model):
     CHOICES = ((0,'Indefinido'),(1,'Fijo'))
     tipo_contrato = models.IntegerField(choices=CHOICES, default=0, null=False, blank=False)
     fecha_inicio = models.DateField('Fecha de inicio de labores', blank=False, null=False)
-    fecha_ultimo_carnet = models.DateField('Fecha de ultumo carnet', blank=True, null=False)
+    fecha_ultimo_carnet = models.DateField('Fecha de emisión del último carnet', blank=True, null=False)
 
     def __str__(self):
         return '{} {} {} {}'.format(self.nombre1, self.nombre2, self.apellido1, self.apellido2)
@@ -98,6 +98,9 @@ class Funcionarios(models.Model):
         self.apellido1 = self.apellido1.upper()
         self.apellido2 = self.apellido2.upper()
         super(Funcionarios, self).save()
+
+    class Meta:
+        verbose_name_plural = "Funcionarios"
 
 class Noticias(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
