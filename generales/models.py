@@ -92,6 +92,8 @@ class Funcionarios(models.Model):
     hora_salida_almuerzo = models.TimeField('Hora de salida almuerzo', default='12:00', blank=True, null=False)
     hora_entrada_de_almuerzo = models.TimeField('Hora entrada de almuerzo', default='14:00', blank=True, null=False)
     hora_salida = models.TimeField('Hora salida (terminación jornada)',  default='18:00',blank=False, null=False)
+    CHOICES1 = ((0,'Ausente'),(1,'En Oficina'))
+    estado = models.IntegerField(choices=CHOICES1, default=0, null=False, blank=False)
 
     def __str__(self):
         return '{} {} {} {}'.format(self.nombre1, self.nombre2, self.apellido1, self.apellido2)
@@ -105,6 +107,14 @@ class Funcionarios(models.Model):
 
     class Meta:
         verbose_name_plural = "Funcionarios"
+
+class io_funcionarios(ClaseModelo):
+    funcionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default=0, null=False, blank=False)
+    fecha = models.DateField('Fecha de nacimiento', blank=False, null=False)
+    hora = models.TimeField(blank=True, null=False)
+
+    class Meta:
+        verbose_name_plural = "IO Funcionarios"
 
 class Noticias(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
