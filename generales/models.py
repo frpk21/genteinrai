@@ -108,7 +108,7 @@ class Funcionarios(models.Model):
     class Meta:
         verbose_name_plural = "Funcionarios"
 
-class io_funcionarios(ClaseModelo):
+class io_funcionarios(models.Model):
     funcionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default=0, null=False, blank=False)
     fecha = models.DateField('Fecha de nacimiento', blank=False, null=False)
     hora = models.TimeField(blank=True, null=False)
