@@ -129,6 +129,9 @@
 							<li><a href="{% url 'generales:ocupacional' %}">Salud Ocupacional</a></li>
 							<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
                             <li><a href="{% url 'generales:contacto' %}">Contacto</a></li>
+                            {% if request.user|has_group:"subadmin" %}
+                                        <li><a href="{% url 'generales:contacto' %}">Control de horarios</a></li>
+                                    {% endif %}
                             
 						</ul>
 					</li>
