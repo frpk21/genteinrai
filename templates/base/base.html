@@ -80,8 +80,8 @@
 									<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
                                     <li><a href="{% url 'generales:contacto' %}">Contacto</a></li>
                                     {% if request.user|has_group:"subadmin" %}
-                                        <li >
-                                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Control de horarios</a>
+                                        <li>
+                                            <a href="" >Control de horarios</a>
                                             <ul class="dropdown-submenu">
                                                 <li><a href="{% url 'generales:bienestar' %}">General</a></li>
                                                 <li><a href="{% url 'generales:ocupacional' %}">Por Funcionario</a></li>
