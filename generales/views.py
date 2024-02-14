@@ -120,12 +120,14 @@ class ctrl_horariosView(LoginRequiredMixin, generic.TemplateView):
     def get(self, request, *args, **kwargs):
         #trafico = io_funcionarios.objects.filter(fecha__gte=(date.today()-timedelta(days=30))).order_by('-fecha')
         self.object = None
+        sede=request.user.profile.sede
 
         return self.render_to_response(
             self.get_context_data(
                 anor=date.today().year,
                 fecha=date.today(),
-                sedes=Sedes.objects.filter(id=int(self.request.user.profile.sede)).order_by('nombre_sede')
+                sedes=Sedes.objects.filter(id=sede.id).order_by('nombre_sede')
+                sedes2=Sedes.objects.all().order_by('nombre_sede')
             )
         )
     

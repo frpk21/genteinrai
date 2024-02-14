@@ -33,18 +33,33 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for item in sedes %}
-                                            <tr>
-                                                <td><strong>{{item.nombre_sede}}</strong></td>
-                                                <td class="td-actions text-center">
-                                                    <a href="javascript: genera_trafic({{item.id}}) ">
-                                                        <button type="button" rel="tooltip" class="btn btn-info btn-round">
-                                                            <i class="material-icons">Ver</i>
-                                                        </button>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
+                                        {% if request.user|has_group:"administradores" %}
+                                            {% for item in sedes %}
+                                                <tr>
+                                                    <td><strong>{{item.nombre_sede}}</strong></td>
+                                                    <td class="td-actions text-center">
+                                                        <a href="javascript: genera_trafic({{item.id}}) ">
+                                                            <button type="button" rel="tooltip" class="btn btn-info btn-round">
+                                                                <i class="material-icons">Ver</i>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for item in sedes2 %}
+                                                <tr>
+                                                    <td><strong>{{item.nombre_sede}}</strong></td>
+                                                    <td class="td-actions text-center">
+                                                        <a href="javascript: genera_trafic({{item.id}}) ">
+                                                            <button type="button" rel="tooltip" class="btn btn-info btn-round">
+                                                                <i class="material-icons">Ver</i>
+                                                            </button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
                                     </tbody>
                                 </table>
                             </div>
