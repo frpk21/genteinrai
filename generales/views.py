@@ -125,7 +125,7 @@ class ctrl_horariosView(LoginRequiredMixin, generic.TemplateView):
             self.get_context_data(
                 anor=date.today().year,
                 fecha=date.today(),
-                sedes=Sedes.objects.all().order_by('nombre_sede')
+                sedes=Sedes.objects.filter(id=self.request.user.profile.sede).order_by('nombre_sede')
             )
         )
     
