@@ -33,6 +33,8 @@ urlpatterns = [
     path('tutoriales/tp/<int:pk>', views.TipoTutorialView.as_view(), name='tipo_tutorial'),
     path('update/', views.ajax_update, name='upd'),
     path('update/tutoriales/<str:pk>', views.UpdtutorialesView.as_view(), name='updtuto'),
+    path('ctrl_horarios/', views.ctrl_horariosView.as_view(), name='ctrl_horarios'),
+    path('ctrl_horarios/trafic/', views.ctrl_horariosDetalleView.as_view(), name='ctrl_horarios_detalle'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

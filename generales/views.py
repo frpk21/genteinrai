@@ -16,7 +16,7 @@ from collections import namedtuple
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from generales.forms import MesAnoForm
-from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales, Home1
+from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales, Home1, io_funcionarios
 from .forms import SuscribirseForm, ComentarioForm
 from django.db.models import Count
 from django.contrib.auth import authenticate, login
@@ -25,6 +25,8 @@ from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.utils.html import format_html
 from io import StringIO
+from django.views.generic.base import TemplateView, View
+from django.template.loader import render_to_string
 import os, time
 
 class SinPrivilegios(PermissionRequiredMixin):
@@ -110,7 +112,46 @@ class BienestarView(LoginRequiredMixin, generic.TemplateView):
                 anor=date.today().year,
                 bienestar=bienestar
             )
-        ) 
+        )
+
+class ctrl_horariosView(LoginRequiredMixin, generic.TemplateView):
+    template_name='generales/ctrl_horarios_sedes.html'
+    login_url='generales:login'
+    def get(self, request, *args, **kwargs):
+        #trafico = io_funcionarios.objects.filter(fecha__gte=(date.today()-timedelta(days=30))).order_by('-fecha')
+        self.object = None
+
+        return self.render_to_response(
+            self.get_context_data(
+                anor=date.today().year,
+                fecha=date.today(),
+                sedes=Sedes.objects.all().order_by('nombre_sede')
+            )
+        )
+    
+class ctrl_horariosDetalleView(View):
+    def get(self, request):
+        pk = int(request.GET.get('pk', 0))
+        fecha = request.GET.get('fecha')
+        #fecha__gte=(date.today()-timedelta(days=30))
+        trafico = io_funcionarios.objects.filter(fecha=fecha, funcionario__sede=pk).order_by('funcionario__nombre1','id')
+        return JsonResponse(
+                {
+                    'content': {
+                        'tbl_rs': render_to_string('generales/trafico.html', {'trafico': trafico})
+                    }
+                }
+            )
+    def serializer(self,trafico: list):
+        listar=[]
+        for x in trafico:
+            listar.append({
+                "funcionario": x.funcionario,
+                "fecha": x.fecha,
+                "hora": x.hora,
+                "tipo_evento": x.tipo_evento
+            })
+        return listar
 
 class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/ocupacional.html'

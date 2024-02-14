@@ -1,0 +1,93 @@
+
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block contenido %}
+<section class="contact_area2">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="card-header card-header-warning card-header-icon">
+                <div class="row justify-content-center">
+                    <div>
+                        <h4 class="card-title" style="color:black;">REPORTE HORARIOS DE FUNCIONARIOS</h4>
+                        <form method="POST" class="post-form">
+                            {% csrf_token %}
+                            <div class="row justify-content-center">
+                                <span style="color: black;">FECHA CONSULTA</span>&nbsp;&nbsp;<input style="color:blue;" type="date" name="fecha" id="id_fecha" value="{{fecha}}">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div><br/>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="material-datatables">
+                                <table class="table table-striped table-no-bordered table-hover" cellspacing="0" style="width:100%; font-size:14px; color: black;">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size:12px; background: gray; color: white;">SEDE</th>
+                                            <th style="font-size:12px; background: gray; color: yellow;" data-orderable="false" class="text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in sedes %}
+                                            <tr>
+                                                <td><strong>{{item.nombre_sede}}</strong></td>
+                                                <td class="td-actions text-center">
+                                                    <a href="javascript: genera_trafic({{item.id}}) ">
+                                                        <button type="button" rel="tooltip" class="btn btn-info btn-round">
+                                                            <i class="material-icons">Ver</i>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="id_tbl_trafico">
+                                {% include 'generales/trafico.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    function genera_trafic(pk){
+        var fecha = $('#id_fecha').val();
+        var url = "{% url 'generales:ctrl_horarios_detalle' %}";
+        var csrftoken = '{{ csrf_token }}';
+        $.ajax({
+            url: url,
+            type: "GET",
+            headers:{'X-CSRFToken':csrftoken},
+            data: {'pk': pk, 'fecha': fecha},
+            success:function(response){
+                if (response.content.tbl_rs.length>0){
+                    $('#id_tbl_trafico').html(response.content.tbl_rs);
+                }
+            },
+        });
+    };
+    $(function () {
+        $('#fecha').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
+    });
+</script>
+
+{% endblock contenido %}

@@ -100,7 +100,8 @@ class Funcionarios(models.Model):
  
     def save(self, *args, **kwargs):
         self.nombre1 = self.nombre1.upper()
-        self.nombre2 = self.nombre2.upper()
+        if self.nombre2:
+            self.nombre2 = self.nombre2.upper()
         self.apellido1 = self.apellido1.upper()
         self.apellido2 = self.apellido2.upper()
         super(Funcionarios, self).save()
@@ -112,6 +113,8 @@ class io_funcionarios(models.Model):
     funcionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default=0, null=False, blank=False)
     fecha = models.DateField('Fecha de nacimiento', blank=False, null=False)
     hora = models.TimeField(blank=True, null=False)
+    CHOICES = ((0,'Entra'),(1,'Sale'))
+    tipo_evento = models.IntegerField(choices=CHOICES, default=0, null=False, blank=False)
 
     class Meta:
         verbose_name_plural = "IO Funcionarios"
@@ -278,4 +281,192 @@ class Reglamento(models.Model):
         return '{}'.format(self.sede.nombre_sede)
 
     class Meta:
-        verbose_name_plural = "Reglamento"        
+        verbose_name_plural = "Reglamento"
+
+def reporte_diario(request):
+        import io
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle
+        from reportlab.lib.enums import TA_LEFT, TA_CENTER
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+        from reportlab.lib import colors  
+        from reportlab.lib.pagesizes import letter, landscape
+        from reportlab.platypus import Table
+        from reportlab.lib.units import inch
+        from reportlab.platypus import Image, Paragraph, Spacer
+        from django.core.mail import EmailMessage
+        from django.http import HttpResponse
+
+        response = HttpResponse(content_type='application/pdf')  
+        buffer = io.BytesIO()
+        ordenes = []
+        logo = "static/base/img/inrai/logo-inrai-300px.png"
+        texto = "static/base/img/inrai/logo-inrai-300px.png"
+        image = Image(logo, 3 * inch, 1.2 * inch)
+        image.hAlign = "LEFT"
+        image1 = Image(texto, 2 * inch, 0.5 * inch)
+        image1.hAlign = "LEFT"
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name='Normal_CENTER', alignment=TA_CENTER))
+        styles.add(ParagraphStyle(name='obs_imp', alignment=TA_LEFT,fontSize=10 ))
+        styles.add(ParagraphStyle(name='Pie',
+                            alignment=TA_CENTER,
+                            fontName='Helvetica',
+                            fontSize=14,
+                            textColor=colors.darkgray,
+                            leading=8,
+                            textTransform='uppercase',
+                            wordWrap='LTR',
+                            splitLongWords=True,
+                            spaceShrinkage=0.05,
+                            ))
+        styles.add(ParagraphStyle(name='link',
+                            alignment=TA_CENTER,
+                            fontName='Helvetica',
+                            fontSize=12,
+                            textColor=colors.blue,
+                            leading=8,
+                            textTransform='lowercase',
+                            wordWrap='LTR',
+                            splitLongWords=False,
+                            spaceShrinkage=0,
+                            #backColor=colors.cyan,
+                            ))
+        styles.add(ParagraphStyle(name='confirma',
+                            alignment=TA_CENTER,
+                            fontName='Helvetica',
+                            fontSize=10,
+                            textColor=colors.red,
+                            leading=8,
+                            #textTransform='lowercase',
+                            wordWrap='LTR',
+                            splitLongWords=False,
+                            spaceAfter=3,
+                            spaceBefore=3,
+                            spaceShrinkage=0,
+                            backColor=colors.yellow,
+                            ))
+        styles.add(ParagraphStyle(name='ejemplo',
+                            parent=styles['Normal'],
+                            fontName='Helvetica',
+                            wordWrap='LTR',
+                            alignment=TA_LEFT,
+                            fontSize=12,
+                            leading=13,
+                            textColor=colors.red,
+                            borderPadding=0,
+                            leftIndent=0,
+                            backcolor=colors.yellow,
+                            rightIndent=0,
+                            spaceAfter=0,
+                            spaceBefore=0,
+                            splitLongWords=True,
+                            spaceShrinkage=0.05,
+                            ))
+        styles.add(ParagraphStyle(name='ejemplo1',
+                            parent=styles['Normal'],
+                            fontName='Helvetica',
+                            wordWrap='LTR',
+                            alignment=TA_CENTER,
+                            fontSize=12,
+                            leading=13,
+                            textColor=colors.red,
+                            borderPadding=1,
+                            leftIndent=0,
+                            backcolor=colors.yellow,
+                            rightIndent=0,
+                            spaceAfter=0,
+                            spaceBefore=2,
+                            splitLongWords=True,
+                            spaceShrinkage=0.05,
+                            ))
+        tit="         Rad-No. "
+        filename = "Reporte_horarios.pdf"
+        
+        t=Table(
+            data=[
+                [image1,'','',''],
+                ['','','',''],
+                ['REPORTE HORARIOS DE PERSONAL','','',''],
+                ['','','',''],
+                ['FECHA', '',(date.today()-1).strftime('%d/%m/%Y')+tit,'',''],
+                ['', '','',''],
+                ['', '','',''],
+                ['', '','',''],
+                ['', '','',''],
+                ['', '','','']
+            ],
+            colWidths=[70,20,350,200],
+            style=[
+                    ("FONT", (0,0), (0,2), "Helvetica-Bold", 15, 15,colors.grey),
+                    ("FONT", (1,0), (5,1), "Helvetica", 7, 7,colors.grey),
+                    ("FONT", (1,2), (2,-1), "Helvetica-Bold", 11, 11),
+                ]
+            )
+        
+        t.hAlign = "LEFT"
+        ordenes.append(t)
+        ordenes.append(Spacer(1, 5))
+        try:
+            nube=self.open_db_cloud()
+            cursor_nube=nube.cursor()
+            try:
+                cursor_nube.execute("SELECT * FROM generales_sedes")
+                sedes = namedtuplefetchall(cursor_nube)
+                for n, x in enumerate(sedes):
+                    sql="SELECT generales_funcionarios.nombre1 as n1, generales_funcionarios.nombre2 as n2, generales_funcionarios.apellido1 as a1, generales_funcionarios.apellido2 as a2, generales_funcionarios.hora_entrada as h1, generales_funcionarios.hora_salida as h2"
+                    sql = sql + " generales_io_funcionarios.fecha, generales_io_funcionarios.hora, generales_io_funcionarios.tipo_evento"
+                    sql = sql + " FROM generales_io_funcionarios LEFT JOIN generales_funcionarios on generales_io_funcionarios.id=funcionarios.id where generales_funcionarios.sede_id="+str(x.id).strip()+" AND fecha=(current_date-1)"
+                    cursor_nube.execute(sql)
+                    resul = namedtuplefetchall(cursor_nube)
+                    if resul:
+                        for i,p in enumerate(resul):
+                            ordenes0= [(p.n1 + p.n2 + p.a1 + p.a2,
+                                        p.feha_entrada+" - "+p.fecha_salida,
+                                        p.fecha,
+                                        p.hora,
+                                        p.tipo_evento)]
+                        headings0 = ('Funcionario', 'Horario', 'Fecha', 'Hora', 'Evento')
+                        col = 5
+            except psycopg2.Error as e:
+                self.lbl_error.setText("ERROR DE CONEXION SERVIDOR VIRTUAL: "+str(e))
+                self.lbl_error.show()
+            cursor_nube.close()
+            nube.close()
+        except psycopg2.Error as e:
+            self.lbl_error.setText("SERVIDOR VIRTUAL: "+datetime.now().strftime('%d/%m/%Y %H:%M')+" *** ERROR DE CONEXION SV EN LA NUBE *** "+str(e))
+            self.lbl_error.show()                
+            t0 = Table([headings0] + ordenes0)
+            t0.setStyle(TableStyle(
+                [  
+                    ('GRID', (0, 0), (col, -1), 1, colors.darkgray),  
+                    #('LINEBELOW', (0, 0), (-1, 0), 2, colors.gray),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                    ('ALIGN',(0,1),(col,1),'CENTRE'),
+                    ('BACKGROUND', (0, 0), (col,0), colors.gray)  
+                ]  
+            ))
+            t0.hAlign = "LEFT"
+            ordenes.append(t0)
+        ordenes.append(Spacer(10, 15))
+        pie = Paragraph("inrai.net", styles['Pie'])
+        pie.hAlign = "CENTER"
+        ordenes.append(pie)
+        icon = "static/base/img/inrai/favicon.png"
+        
+        doc = SimpleDocTemplate(buffer,
+                    pagesize=landscape(letter),
+                    rightMargin=40,
+                    leftMargin=50,
+                    topMargin=20,  
+                    bottomMargin=8,
+                    author="INRAI",
+                    title="REPORTE DE HORARIOS DEL PERSONAL",
+                    icon=icon,
+                    )
+        
+        doc.build(ordenes)
+        response.write(buffer.getvalue())
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        return response

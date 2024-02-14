@@ -79,8 +79,12 @@
 									<li><a href="{% url 'generales:ocupacional' %}">Salud Ocupacional</a></li>
 									<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
                                     <li><a href="{% url 'generales:contacto' %}">Contacto</a></li>
-                                    {% if request.user|has_group:"subadmin" %}
-                                        <li><a href="{% url 'generales:contacto' %}">Control de horarios</a></li>
+                                    {% if request.user|has_group:"subadmin"  %}
+                                        <li><a href="{% url 'generales:ctrl_horarios' %}">Control de horarios</a></li>
+                                    {% else %}
+                                        {% if request.user|has_group:"administradores"  %}
+                                            <li><a href="{% url 'generales:ctrl_horarios' %}">Control de horarios</a></li>
+                                        {% endif %}
                                     {% endif %}
 								</ul>
 							</li>
@@ -129,10 +133,13 @@
 							<li><a href="{% url 'generales:ocupacional' %}">Salud Ocupacional</a></li>
 							<li><a href="{% url 'generales:reglamento' %}">Reglamento Interno</a></li>
                             <li><a href="{% url 'generales:contacto' %}">Contacto</a></li>
-                            {% if request.user|has_group:"subadmin" %}
-                                        <li><a href="{% url 'generales:contacto' %}">Control de horarios</a></li>
-                                    {% endif %}
-                            
+                            {% if request.user|has_group:"subadmin"  %}
+                                <li><a href="{% url 'generales:ctrl_horarios' %}">Control de horarios</a></li>
+                            {% else %}
+                                {% if request.user|has_group:"administradores"  %}
+                                    <li><a href="{% url 'generales:ctrl_horarios' %}">Control de horarios</a></li>
+                                {% endif %}
+                            {% endif %}
 						</ul>
 					</li>
 					<li><a href="{% url 'generales:sedes' %}">Cumplea&ntilde;eros</a></li>
