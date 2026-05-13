@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Kiosko de Fichaje — INRAI</title>
+    <link rel="icon" href="/static/base/img/inrai/favicon.png" type="image/x-icon">
+    {% csrf_token %}
+    <style>
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+        .kiosko {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw; padding: 20px; text-align: center;
+        }
+        .logo { max-width: 220px; margin-bottom: 16px; opacity: 0.95; }
+        h1 { font-size: 42px; font-weight: 300; margin: 8px 0 6px; letter-spacing: 0.5px; }
+        .subtitulo { font-size: 18px; opacity: 0.75; margin-bottom: 32px; }
+        .reloj { font-size: 64px; font-weight: 200; font-variant-numeric: tabular-nums; margin-bottom: 8px; letter-spacing: 1px; }
+        .fecha { font-size: 18px; opacity: 0.7; margin-bottom: 36px; text-transform: capitalize; }
+
+        .panel-espera, .panel-resultado, .panel-error {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            padding: 36px 48px;
+            min-width: 460px;
+            max-width: 720px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+        .panel-resultado { background: rgba(40,167,69,0.18); border-color: rgba(40,167,69,0.5); }
+        .panel-error { background: rgba(220,53,69,0.18); border-color: rgba(220,53,69,0.5); }
+        .panel-oculto { display: none; }
+
+        .icono-grande { font-size: 96px; line-height: 1; margin-bottom: 16px; }
+        .instr-titulo { font-size: 26px; font-weight: 500; margin: 0 0 6px; }
+        .instr-detalle { font-size: 15px; opacity: 0.75; margin: 0; }
+
+        .res-nombre { font-size: 32px; font-weight: 500; margin: 12px 0 4px; }
+        .res-tipo { font-size: 22px; opacity: 0.9; margin: 4px 0; }
+        .res-hora { font-size: 28px; font-weight: 300; margin: 8px 0 0; font-variant-numeric: tabular-nums; }
+        .res-cedula { font-size: 13px; opacity: 0.7; margin-top: 6px; }
+        .res-foto { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.4); margin-bottom: 8px; background: #fff; }
+
+        .err-titulo { font-size: 26px; font-weight: 500; margin: 12px 0 6px; }
+        .err-detalle { font-size: 16px; opacity: 0.85; }
+
+        .footer {
+            position: fixed; bottom: 12px; left: 0; right: 0;
+            text-align: center; font-size: 12px; opacity: 0.5;
+        }
+
+        .pulso {
+            display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+            background: #28a745;
+            animation: pulso 1.4s ease-in-out infinite;
+            margin-right: 8px; vertical-align: middle;
+        }
+        @keyframes pulso {
+            0%, 100% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* input invisible para capturar el lector USB */
+        #captura {
+            position: absolute; top: -100px; left: -100px;
+            width: 1px; height: 1px; opacity: 0; pointer-events: none;
+        }
+
+        .sesion-info {
+            position: fixed; top: 12px; right: 16px;
+            font-size: 11px; opacity: 0.6;
+        }
+        .salir {
+            color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 10px; border-radius: 4px; margin-left: 8px;
+        }
+        .salir:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="sesion-info">
+    Sesión: <strong>{{ request.user.username }}</strong>
+    <a href="{% url 'generales:ctrl_horarios' %}" class="salir">← Dashboard</a>
+    <a href="{% url 'generales:logout' %}" class="salir">Cerrar sesión</a>
+</div>
+
+<div class="kiosko">
+    <img src="/static/base/img/logo-inrai-218x52.png" alt="INRAI" class="logo" onerror="this.style.display='none'">
+
+    <div class="reloj" id="reloj">--:--:--</div>
+    <div class="fecha" id="fecha">—</div>
+
+    <!-- Pantalla 1: esperando lectura -->
+    <div class="panel-espera fade-in" id="panel-espera">
+        <div class="icono-grande">📇</div>
+        <p class="instr-titulo"><span class="pulso"></span> Pase su carnet por el lector</p>
+        <p class="instr-detalle">El sistema registrará automáticamente su entrada, almuerzo o salida.</p>
+    </div>
+
+    <!-- Pantalla 2: resultado OK -->
+    <div class="panel-resultado panel-oculto" id="panel-resultado">
+        <img id="res-foto" class="res-foto" src="" alt="" onerror="this.style.display='none'">
+        <div class="icono-grande">✓</div>
+        <div class="res-nombre" id="res-nombre"></div>
+        <div class="res-tipo" id="res-tipo"></div>
+        <div class="res-hora" id="res-hora"></div>
+        <div class="res-cedula" id="res-cedula"></div>
+    </div>
+
+    <!-- Pantalla 3: error -->
+    <div class="panel-error panel-oculto" id="panel-error">
+        <div class="icono-grande">⚠</div>
+        <div class="err-titulo" id="err-titulo">Cédula no registrada</div>
+        <div class="err-detalle" id="err-detalle">Acércate a recepción.</div>
+    </div>
+</div>
+
+<input type="text" id="captura" autocomplete="off" autofocus>
+
+<div class="footer">INRAI &middot; Kiosko de Fichaje &middot; <span id="modo-info">Lectura por escáner USB (DIG-9100D)</span></div>
+
+<script>
+(function(){
+    var URL_REGISTRAR = "{% url 'generales:kiosko_registrar' %}";
+    var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    var input = document.getElementById('captura');
+    var panelEspera = document.getElementById('panel-espera');
+    var panelResultado = document.getElementById('panel-resultado');
+    var panelError = document.getElementById('panel-error');
+    var timeoutReset = null;
+    var procesando = false;
+
+    function mostrar(panel){
+        [panelEspera, panelResultado, panelError].forEach(function(p){ p.classList.add('panel-oculto'); p.classList.remove('fade-in'); });
+        panel.classList.remove('panel-oculto');
+        // forzar reflow para reiniciar la animación
+        void panel.offsetWidth;
+        panel.classList.add('fade-in');
+    }
+
+    function resetearAEspera(){
+        mostrar(panelEspera);
+        input.value = '';
+        input.focus();
+    }
+
+    function programarReset(ms){
+        clearTimeout(timeoutReset);
+        timeoutReset = setTimeout(resetearAEspera, ms || 4000);
+    }
+
+    function beep(ok){
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var o = ctx.createOscillator();
+            var g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = ok ? 880 : 220;
+            g.gain.value = 0.08;
+            o.start();
+            setTimeout(function(){ o.stop(); ctx.close(); }, ok ? 120 : 260);
+        } catch(e) {}
+    }
+
+    function mostrarResultado(data){
+        document.getElementById('res-nombre').textContent = data.funcionario.nombre;
+        document.getElementById('res-tipo').textContent = data.evento.tipo_display;
+        document.getElementById('res-hora').textContent = data.evento.hora;
+        document.getElementById('res-cedula').textContent = 'CC ' + data.funcionario.cedula + ' · ' + (data.funcionario.sede || '');
+        var foto = document.getElementById('res-foto');
+        if (data.funcionario.foto){
+            foto.src = data.funcionario.foto;
+            foto.style.display = '';
+        } else {
+            foto.style.display = 'none';
+        }
+        mostrar(panelResultado);
+        beep(true);
+        programarReset(4000);
+    }
+
+    function mostrarError(titulo, detalle){
+        document.getElementById('err-titulo').textContent = titulo || 'Error';
+        document.getElementById('err-detalle').textContent = detalle || '';
+        mostrar(panelError);
+        beep(false);
+        programarReset(3500);
+    }
+
+    function registrar(cedula){
+        if (procesando) return;
+        procesando = true;
+        var form = new FormData();
+        form.append('cedula', cedula);
+        form.append('csrfmiddlewaretoken', csrftoken);
+
+        fetch(URL_REGISTRAR, {
+            method: 'POST',
+            body: form,
+            credentials: 'same-origin',
+            headers: { 'X-CSRFToken': csrftoken }
+        })
+        .then(function(r){ return r.json().then(function(j){ return {status: r.status, data: j}; }); })
+        .then(function(res){
+            procesando = false;
+            if (res.status === 200 && res.data.ok){
+                mostrarResultado(res.data);
+            } else if (res.status === 404){
+                mostrarError('Cédula no registrada', 'Código leído: ' + (res.data.codigo || cedula));
+            } else if (res.status === 429){
+                mostrarError('Lectura duplicada', 'Espere unos segundos antes de pasar de nuevo el carnet.');
+            } else {
+                mostrarError('No se pudo registrar', res.data.error || 'Intente nuevamente.');
+            }
+        })
+        .catch(function(err){
+            procesando = false;
+            mostrarError('Sin conexión', 'Revise la red e intente de nuevo.');
+        });
+    }
+
+    // Mantener foco permanente en el input invisible (los escáneres "tipean" y mandan Enter)
+    function reForzarFoco(){ if (document.activeElement !== input) input.focus(); }
+    setInterval(reForzarFoco, 500);
+    document.addEventListener('click', reForzarFoco);
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden) reForzarFoco(); });
+
+    // Escuchar Enter en el input invisible
+    input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter'){
+            e.preventDefault();
+            var v = input.value.trim();
+            input.value = '';
+            if (v.length > 0){
+                registrar(v);
+            }
+        }
+    });
+
+    // Reloj
+    function tick(){
+        var ahora = new Date();
+        var hh = String(ahora.getHours()).padStart(2,'0');
+        var mm = String(ahora.getMinutes()).padStart(2,'0');
+        var ss = String(ahora.getSeconds()).padStart(2,'0');
+        document.getElementById('reloj').textContent = hh + ':' + mm + ':' + ss;
+        var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('fecha').textContent = ahora.toLocaleDateString('es-CO', opts);
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    resetearAEspera();
+})();
+</script>
+
+</body>
+</html>

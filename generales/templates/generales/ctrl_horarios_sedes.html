@@ -2,7 +2,6 @@
 {% extends 'base/base.html' %}
 
 {% load static %}
-
 {% load auth_extras %}
 
 {% block contenido %}
@@ -10,68 +9,120 @@
 <section class="contact_area2">
     <div class="content">
         <div class="container-fluid">
+
             <div class="card-header card-header-warning card-header-icon">
-                <div class="row justify-content-center">
+                <div class="row justify-content-between align-items-center" style="padding: 10px 20px;">
                     <div>
-                        <h4 class="card-title" style="color:black;">REPORTE ENTRADAS/SALIDAS DE FUNCIONARIOS</h4>
-                        <form method="POST" class="post-form">
-                            {% csrf_token %}
-                            <div class="row justify-content-center">
-                                <span style="color: black;">FECHA CONSULTA</span>&nbsp;&nbsp;<input style="color:blue;" type="date" name="fecha" id="id_fecha" value="{{fecha}}">
-                            </div>
-                        </form>
+                        <h4 class="card-title" style="color:black; margin:0;">REPORTE ENTRADAS / SALIDAS DE FUNCIONARIOS</h4>
+                    </div>
+                    <div>
+                        <a href="{% url 'generales:kiosko' %}" target="_blank" class="btn btn-warning btn-sm" title="Abrir pantalla de fichaje con lector USB">
+                            <i class="material-icons" style="vertical-align:middle;">qr_code_scanner</i>
+                            Abrir kiosko de fichaje
+                        </a>
                     </div>
                 </div>
-            </div><br/>
+
+                <div class="row" style="padding: 0 20px 12px;">
+                    <form method="get" id="filtros-form" class="w-100">
+                        <div class="row align-items-end" style="gap: 10px;">
+
+                            <div>
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Modo</label>
+                                <select id="id_modo" name="modo" style="color:blue;">
+                                    <option value="sede" {% if not filtro_funcionario_id %}selected{% endif %}>Por sede</option>
+                                    <option value="funcionario" {% if filtro_funcionario_id %}selected{% endif %}>Por empleado</option>
+                                </select>
+                            </div>
+
+                            <div id="bloque-sede">
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Sede</label>
+                                <select name="sede" id="id_sede" style="color:blue;">
+                                    {% for s in sedes2 %}
+                                        <option value="{{s.id}}" {% if s.id == filtro_sede %}selected{% endif %}>{{s.nombre_sede}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div id="bloque-funcionario" style="display:none; position:relative;">
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Empleado (cédula o nombre)</label>
+                                <input type="text" id="id_buscar_func" placeholder="Mínimo 2 caracteres..." autocomplete="off" style="color:blue; min-width:260px;">
+                                <input type="hidden" id="id_funcionario_id" name="funcionario_id" value="{{filtro_funcionario_id|default_if_none:''}}">
+                                <div id="autocomplete-results" style="position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; max-height:240px; overflow-y:auto; z-index:50; display:none;"></div>
+                                <div id="funcionario-seleccionado" style="font-size:12px; color:#444; margin-top:4px;"></div>
+                            </div>
+
+                            <div>
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Fecha</label>
+                                <input style="color:blue;" type="date" name="fecha" id="id_fecha" value="{{filtro_fecha|date:'Y-m-d'}}">
+                            </div>
+
+                            <div>
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Desde</label>
+                                <input style="color:blue;" type="date" name="fecha_inicio" id="id_fecha_inicio">
+                            </div>
+
+                            <div>
+                                <label style="color:black; font-size:12px; display:block; margin-bottom:2px;">Hasta</label>
+                                <input style="color:blue;" type="date" name="fecha_fin" id="id_fecha_fin">
+                            </div>
+
+                            <div>
+                                <button type="button" id="btn-consultar" class="btn btn-primary btn-sm">Consultar</button>
+                                <button type="button" id="btn-exportar" class="btn btn-success btn-sm">Descargar CSV</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <br/>
+
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card">
                         <div class="card-body">
+                            <h5 style="color:black;">Sedes</h5>
                             <div class="table-responsive-sm">
-                                <div class="material-datatables">
-                                    <table class="table table-striped table-no-bordered table-hover responsive cellspacing="0" style="width:100%; font-size:14px; color: black;">
-                                        <thead>
-                                            <tr>
-                                                <th style="font-size:12px; background: gray; color: white;">SEDE</th>
-                                                <th style="font-size:12px; background: gray; color: yellow;" data-orderable="false" class="text-center">Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% if request.user|has_group:"administradores" %}
-                                                {% for item in sedes2 %}
-                                                    <tr>
-                                                        <td><strong>{{item.nombre_sede}}</strong></td>
-                                                        <td class="td-actions text-center">
-                                                            <a href="javascript: genera_trafic({{item.id}}) ">
-                                                                <button type="button" rel="tooltip" class="btn btn-info btn-round">
-                                                                    <i class="material-icons">Ver</i>
-                                                                </button>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% else %}
-                                                {% for item in sedes %}
-                                                    <tr>
-                                                        <td><strong>{{item.nombre_sede}}</strong></td>
-                                                        <td class="td-actions text-center">
-                                                            <a href="javascript: genera_trafic({{item.id}}) ">
-                                                                <button type="button" rel="tooltip" class="btn btn-info btn-round">
-                                                                    <i class="material-icons">Ver</i>
-                                                                </button>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table table-striped table-hover" style="width:100%; font-size:13px; color: black;">
+                                    <thead>
+                                        <tr>
+                                            <th style="font-size:12px; background: gray; color: white;">SEDE</th>
+                                            <th style="font-size:12px; background: gray; color: yellow;" class="text-center">Ver</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if request.user|has_group:"administradores" or request.user|has_group:"subadmin" %}
+                                            {% for item in sedes2 %}
+                                                <tr>
+                                                    <td><strong>{{item.nombre_sede}}</strong></td>
+                                                    <td class="td-actions text-center">
+                                                        <a href="javascript: consultarSede({{item.id}})">
+                                                            <button type="button" class="btn btn-info btn-sm">Ver</button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% for item in sedes %}
+                                                <tr>
+                                                    <td><strong>{{item.nombre_sede}}</strong></td>
+                                                    <td class="td-actions text-center">
+                                                        <a href="javascript: consultarSede({{item.id}})">
+                                                            <button type="button" class="btn btn-info btn-sm">Ver</button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+
+                <div class="col-md-9">
                     <div class="card">
                         <div class="card-body">
                             <div id="id_tbl_trafico">
@@ -85,29 +136,145 @@
     </div>
 </section>
 
-
 <script>
-    function genera_trafic(pk){
-        var fecha = $('#id_fecha').val();
-        var url = "{% url 'generales:ctrl_horarios_detalle' %}";
-        var csrftoken = '{{ csrf_token }}';
+(function(){
+    var URL_DETALLE = "{% url 'generales:ctrl_horarios_detalle' %}";
+    var URL_BUSCAR = "{% url 'generales:buscar_funcionario' %}";
+    var URL_CSV = "{% url 'generales:exportar_asistencia_csv' %}";
+    var debounceTimer = null;
+
+    function el(id){ return document.getElementById(id); }
+
+    function toggleModo(){
+        var modo = el('id_modo').value;
+        el('bloque-sede').style.display = (modo === 'sede') ? '' : 'none';
+        el('bloque-funcionario').style.display = (modo === 'funcionario') ? '' : 'none';
+    }
+
+    function paramsConsulta(){
+        var modo = el('id_modo').value;
+        var p = {};
+        if (modo === 'funcionario'){
+            var fid = el('id_funcionario_id').value;
+            if (!fid){ alert('Selecciona un empleado primero.'); return null; }
+            p.funcionario_id = fid;
+        } else {
+            p.pk = el('id_sede').value;
+        }
+        var fIni = el('id_fecha_inicio').value;
+        var fFin = el('id_fecha_fin').value;
+        var fSimple = el('id_fecha').value;
+        if (fIni && fFin){
+            p.fecha_inicio = fIni;
+            p.fecha_fin = fFin;
+        } else if (fSimple){
+            p.fecha = fSimple;
+        }
+        return p;
+    }
+
+    function consultar(){
+        var p = paramsConsulta();
+        if (!p) return;
         $.ajax({
-            url: url,
-            type: "GET",
-            headers:{'X-CSRFToken':csrftoken},
-            data: {'pk': pk, 'fecha': fecha},
-            success:function(response){
-                if (response.content.tbl_rs.length>0){
-                    $('#id_tbl_trafico').html(response.content.tbl_rs);
+            url: URL_DETALLE,
+            type: 'GET',
+            data: p,
+            success: function(resp){
+                if (resp && resp.content && resp.content.tbl_rs){
+                    el('id_tbl_trafico').innerHTML = resp.content.tbl_rs;
                 }
             },
+            error: function(xhr){
+                var msg = 'Error al consultar';
+                try { msg = JSON.parse(xhr.responseText).error || msg; } catch(e){}
+                alert(msg);
+            }
         });
+    }
+
+    window.consultarSede = function(pk){
+        el('id_modo').value = 'sede';
+        el('id_sede').value = pk;
+        toggleModo();
+        consultar();
     };
-    $(function () {
-        $('#fecha').datetimepicker({
-            format: 'DD/MM/YYYY'
+
+    function exportarCSV(){
+        var modo = el('id_modo').value;
+        var fIni = el('id_fecha_inicio').value || el('id_fecha').value;
+        var fFin = el('id_fecha_fin').value || el('id_fecha').value;
+        if (!fIni || !fFin){ alert('Selecciona rango Desde-Hasta o una Fecha.'); return; }
+        var q = 'fecha_inicio=' + fIni + '&fecha_fin=' + fFin;
+        if (modo === 'funcionario'){
+            var fid = el('id_funcionario_id').value;
+            if (!fid){ alert('Selecciona un empleado primero.'); return; }
+            q += '&funcionario_id=' + fid;
+        } else {
+            q += '&sede=' + el('id_sede').value;
+        }
+        window.location.href = URL_CSV + '?' + q;
+    }
+
+    function renderResultados(items){
+        var cont = el('autocomplete-results');
+        if (!items || !items.length){
+            cont.innerHTML = '<div style="padding:6px 10px; color:#888;">Sin resultados</div>';
+            cont.style.display = 'block';
+            return;
+        }
+        var html = '';
+        items.forEach(function(it){
+            html += '<div class="autocomplete-item" data-id="' + it.id + '" data-nombre="' + (it.nombre || '').replace(/"/g,'&quot;') + '" data-cedula="' + it.cedula + '" '
+                + 'style="padding:6px 10px; cursor:pointer; border-bottom:1px solid #eee;">'
+                + '<strong>' + it.cedula + '</strong> &mdash; ' + it.nombre
+                + '<div style="font-size:11px; color:#666;">' + (it.sede || '') + ' &middot; ' + (it.cargo || '') + '</div>'
+                + '</div>';
+        });
+        cont.innerHTML = html;
+        cont.style.display = 'block';
+        cont.querySelectorAll('.autocomplete-item').forEach(function(node){
+            node.addEventListener('mouseover', function(){ node.style.background = '#f5f5f5'; });
+            node.addEventListener('mouseout', function(){ node.style.background = ''; });
+            node.addEventListener('click', function(){
+                el('id_funcionario_id').value = node.dataset.id;
+                el('id_buscar_func').value = node.dataset.cedula + ' - ' + node.dataset.nombre;
+                el('funcionario-seleccionado').innerHTML = 'Seleccionado: <strong>' + node.dataset.nombre + '</strong> (CC ' + node.dataset.cedula + ')';
+                cont.style.display = 'none';
+            });
+        });
+    }
+
+    function buscarFuncionario(q){
+        if (q.length < 2){
+            el('autocomplete-results').style.display = 'none';
+            return;
+        }
+        $.ajax({
+            url: URL_BUSCAR,
+            type: 'GET',
+            data: {q: q},
+            success: function(resp){ renderResultados(resp.results || []); }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        toggleModo();
+        el('id_modo').addEventListener('change', toggleModo);
+        el('btn-consultar').addEventListener('click', consultar);
+        el('btn-exportar').addEventListener('click', exportarCSV);
+        el('id_buscar_func').addEventListener('input', function(e){
+            clearTimeout(debounceTimer);
+            var v = e.target.value;
+            debounceTimer = setTimeout(function(){ buscarFuncionario(v); }, 250);
+        });
+        document.addEventListener('click', function(e){
+            if (!e.target.closest('#bloque-funcionario')){
+                el('autocomplete-results').style.display = 'none';
+            }
         });
     });
+})();
 </script>
 
 {% endblock contenido %}

@@ -3,11 +3,8 @@ from django import forms
 from datetime import date
 from django.forms.models import inlineformset_factory
 
-from genteinrai.settings import CKEDITOR_CONFIGS
 from .models import Suscribir, Elmuro
-from tempus_dominus.widgets import DatePicker, TimePicker, DateTimePicker
-from ckeditor.widgets import CKEditorWidget
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.widgets import CKEditor5Widget
 from django.conf import settings
 
 class SuscribirseForm(forms.ModelForm):
@@ -32,7 +29,7 @@ class SuscribirseForm(forms.ModelForm):
 
 class ComentarioForm(forms.ModelForm):
     foto = forms.FileField()
-    detalle=forms.CharField(widget=CKEditorWidget())
+    detalle = forms.CharField(widget=CKEditor5Widget(config_name='default'))
     
     class Meta:
         model = Elmuro

@@ -1,33 +1,54 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
-from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic.edit import CreateView
-from django.contrib.messages.views import SuccessMessageMixin
-from genteinrai import settings
-from datetime import date
-from django.shortcuts import redirect
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.views.generic.list import ListView
-from django.shortcuts import render
-from django.db import connections
+import csv
+import os
+import time
 from collections import namedtuple
-from django.http import JsonResponse
-from datetime import datetime, timedelta
-from generales.forms import MesAnoForm
-from .models import Bienestar, Noticias, Ocupacional, Sedes, Miempresa, Reglamento, Elmuro, Tipos_tutoriales, Tutoriales, Home1, io_funcionarios
-from .forms import SuscribirseForm, ComentarioForm
-from django.db.models import Count
-from django.contrib.auth import authenticate, login
-from django.core.mail import send_mail
-from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.utils.html import format_html
+from datetime import date, datetime, timedelta
 from io import StringIO
-from django.views.generic.base import TemplateView, View
+
+from django.conf import settings
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.mail import EmailMessage, EmailMultiAlternatives, send_mail
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.db import connections
+from django.db.models import Count, Q
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, StreamingHttpResponse
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-import os, time
+from django.urls import reverse, reverse_lazy
+from django.utils.html import format_html
+from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView, View
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+
+from generales.forms import MesAnoForm
+from .forms import SuscribirseForm, ComentarioForm
+from .models import (
+    Bienestar, Elmuro, Funcionarios, Home1, io_funcionarios, Miempresa,
+    Noticias, Ocupacional, Reglamento, Sedes, Tipos_tutoriales, Tutoriales,
+)
+
+
+GRUPOS_CTRL_HORARIOS = ('administradores', 'subadmin')
+
+
+class CtrlHorariosAccessMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Solo usuarios autenticados que pertenezcan a administradores o subadmin."""
+    login_url = 'generales:login'
+    raise_exception = False
+
+    def test_func(self):
+        u = self.request.user
+        return u.is_authenticated and (
+            u.is_superuser or u.groups.filter(name__in=GRUPOS_CTRL_HORARIOS).exists()
+        )
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy(self.login_url))
+        return HttpResponseRedirect(reverse_lazy('generales:sin_privilegios'))
 
 class SinPrivilegios(PermissionRequiredMixin):
     login_url='generales:sin_privilegios'
@@ -114,46 +135,303 @@ class BienestarView(LoginRequiredMixin, generic.TemplateView):
             )
         )
 
-class ctrl_horariosView(LoginRequiredMixin, generic.TemplateView):
-    template_name='generales/ctrl_horarios_sedes.html'
-    login_url='generales:login'
+def _parse_fecha(value, default=None):
+    if not value:
+        return default
+    try:
+        return datetime.strptime(value, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        return default
+
+
+def _construir_reporte(funcionarios, fecha_inicio, fecha_fin):
+    """Genera filas de reporte: una por (funcionario, fecha) en el rango."""
+    dias = (fecha_fin - fecha_inicio).days + 1
+    for funcionario in funcionarios:
+        for i in range(dias):
+            fecha = fecha_inicio + timedelta(days=i)
+            yield {
+                'funcionario': funcionario,
+                'fecha': fecha,
+                'resumen': io_funcionarios.resumen_jornada(funcionario, fecha),
+                'estado': io_funcionarios.calcular_estado_asistencia(funcionario, fecha),
+            }
+
+
+class ctrl_horariosView(CtrlHorariosAccessMixin, generic.TemplateView):
+    template_name = 'generales/ctrl_horarios_sedes.html'
+
     def get(self, request, *args, **kwargs):
-        #trafico = io_funcionarios.objects.filter(fecha__gte=(date.today()-timedelta(days=30))).order_by('-fecha')
         self.object = None
-        sede=request.user.profile.sede
+        hoy = date.today()
+        fecha = _parse_fecha(request.GET.get('fecha'), hoy)
+
+        sede_id = request.GET.get('sede')
+        sede = None
+        if sede_id:
+            try:
+                sede = Sedes.objects.get(id=int(sede_id))
+            except (Sedes.DoesNotExist, ValueError, TypeError):
+                sede = None
+        if sede is None:
+            sede = getattr(getattr(request.user, 'profile', None), 'sede', None)
+            if sede is None:
+                sede = Sedes.objects.order_by('nombre_sede').first()
 
         return self.render_to_response(
             self.get_context_data(
-                anor=date.today().year,
-                fecha=date.today(),
-                sedes=Sedes.objects.filter(id=sede.id),
-                sedes2=Sedes.objects.all().order_by('nombre_sede')
+                anor=hoy.year,
+                fecha=fecha,
+                sedes=Sedes.objects.filter(id=sede.id) if sede else Sedes.objects.none(),
+                sedes2=Sedes.objects.all().order_by('nombre_sede'),
+                filtro_sede=sede.id if sede else None,
+                filtro_fecha=fecha,
             )
         )
-    
-class ctrl_horariosDetalleView(View):
+
+
+class ctrl_horariosDetalleView(CtrlHorariosAccessMixin, View):
+    """Detalle de asistencia: por sede o por un funcionario específico, en un rango opcional."""
+
     def get(self, request):
-        pk = int(request.GET.get('pk', 0))
-        fecha = request.GET.get('fecha')
-        #fecha__gte=(date.today()-timedelta(days=30))
-        trafico = io_funcionarios.objects.filter(fecha=fecha, funcionario__sede=pk).order_by('funcionario__nombre1','id')
-        return JsonResponse(
-                {
-                    'content': {
-                        'tbl_rs': render_to_string('generales/trafico.html', {'trafico': trafico})
-                    }
-                }
-            )
-    def serializer(self,trafico: list):
-        listar=[]
-        for x in trafico:
-            listar.append({
-                "funcionario": x.funcionario,
-                "fecha": x.fecha,
-                "hora": x.hora,
-                "tipo_evento": x.tipo_evento
-            })
-        return listar
+        hoy = date.today()
+        pk = request.GET.get('pk')
+        funcionario_id = request.GET.get('funcionario_id')
+        fecha = _parse_fecha(request.GET.get('fecha'), hoy)
+        fecha_inicio = _parse_fecha(request.GET.get('fecha_inicio'), fecha)
+        fecha_fin = _parse_fecha(request.GET.get('fecha_fin'), fecha)
+
+        if fecha_fin < fecha_inicio:
+            fecha_inicio, fecha_fin = fecha_fin, fecha_inicio
+        if (fecha_fin - fecha_inicio).days > 90:
+            return JsonResponse({'error': 'El rango no puede superar 90 días'}, status=400)
+
+        if funcionario_id:
+            try:
+                funcionarios = Funcionarios.objects.filter(id=int(funcionario_id))
+            except (ValueError, TypeError):
+                return JsonResponse({'error': 'funcionario_id inválido'}, status=400)
+            if not funcionarios.exists():
+                return JsonResponse({'error': 'Funcionario no encontrado'}, status=404)
+        else:
+            try:
+                sede_pk = int(pk) if pk else 0
+            except (ValueError, TypeError):
+                return JsonResponse({'error': 'pk inválido'}, status=400)
+            funcionarios = Funcionarios.objects.filter(sede=sede_pk).order_by('nombre1', 'apellido1')
+
+        reporte = list(_construir_reporte(funcionarios, fecha_inicio, fecha_fin))
+
+        return JsonResponse({
+            'content': {
+                'tbl_rs': render_to_string('generales/trafico.html', {'reporte': reporte})
+            }
+        })
+
+
+class BuscarFuncionarioView(CtrlHorariosAccessMixin, View):
+    """Autocomplete: busca funcionarios por cédula o nombre. Devuelve JSON."""
+
+    def get(self, request):
+        q = (request.GET.get('q') or '').strip()
+        if len(q) < 2:
+            return JsonResponse({'results': []})
+        qs = Funcionarios.objects.filter(
+            Q(cedula__icontains=q) |
+            Q(nombre1__icontains=q) |
+            Q(nombre2__icontains=q) |
+            Q(apellido1__icontains=q) |
+            Q(apellido2__icontains=q)
+        ).order_by('apellido1', 'nombre1')[:15]
+        results = [{
+            'id': f.id,
+            'cedula': f.cedula,
+            'nombre': f"{f.nombre1} {f.nombre2 or ''} {f.apellido1} {f.apellido2 or ''}".strip(),
+            'sede': f.sede.nombre_sede if f.sede_id else '',
+            'cargo': f.cargo.nombre if f.cargo_id else '',
+        } for f in qs]
+        return JsonResponse({'results': results})
+
+
+class ExportarAsistenciaCSVView(CtrlHorariosAccessMixin, View):
+    """Exporta el rango como CSV (UTF-8 con BOM para Excel en Windows)."""
+
+    def get(self, request, *args, **kwargs):
+        sede_id = request.GET.get('sede')
+        funcionario_id = request.GET.get('funcionario_id')
+        fecha_inicio = _parse_fecha(request.GET.get('fecha_inicio'))
+        fecha_fin = _parse_fecha(request.GET.get('fecha_fin'))
+
+        if not fecha_inicio or not fecha_fin:
+            return HttpResponse('Fechas inválidas', status=400)
+        if fecha_fin < fecha_inicio:
+            fecha_inicio, fecha_fin = fecha_fin, fecha_inicio
+        if (fecha_fin - fecha_inicio).days > 366:
+            return HttpResponse('El rango no puede superar 1 año', status=400)
+
+        nombre_archivo = 'asistencia'
+        if funcionario_id:
+            try:
+                funcionarios = Funcionarios.objects.filter(id=int(funcionario_id))
+            except (ValueError, TypeError):
+                return HttpResponse('funcionario_id inválido', status=400)
+            if not funcionarios.exists():
+                return HttpResponse('Funcionario no encontrado', status=404)
+            f = funcionarios.first()
+            nombre_archivo = f'asistencia_{f.cedula}'
+        elif sede_id:
+            try:
+                sede = Sedes.objects.get(id=int(sede_id))
+            except (Sedes.DoesNotExist, ValueError, TypeError):
+                return HttpResponse('Sede inválida', status=400)
+            funcionarios = Funcionarios.objects.filter(sede=sede).order_by('nombre1', 'apellido1')
+            nombre_archivo = f'asistencia_{sede.nombre_sede}'
+        else:
+            return HttpResponse('Debe indicar sede o funcionario_id', status=400)
+
+        header = [
+            'Cedula', 'Funcionario', 'Sede', 'Fecha', 'Entrada esperada', 'Salida esperada',
+            'Entrada', 'Inicio almuerzo', 'Fin almuerzo', 'Salida',
+            'Retardo', 'Salida anticipada', 'Ausente', 'Horas trabajadas',
+        ]
+
+        class _Echo:
+            def write(self, value):
+                return value
+
+        writer = csv.writer(_Echo(), quoting=csv.QUOTE_MINIMAL)
+
+        def filas():
+            yield '﻿'  # BOM UTF-8 para Excel
+            yield writer.writerow(header)
+            for fila in _construir_reporte(funcionarios, fecha_inicio, fecha_fin):
+                fn = fila['funcionario']
+                r = fila['resumen']
+                e = fila['estado']
+                yield writer.writerow([
+                    fn.cedula,
+                    f"{fn.nombre1} {fn.nombre2 or ''} {fn.apellido1} {fn.apellido2 or ''}".strip(),
+                    fn.sede.nombre_sede if fn.sede_id else '',
+                    fila['fecha'].strftime('%Y-%m-%d'),
+                    fn.hora_entrada.strftime('%H:%M') if fn.hora_entrada else '',
+                    fn.hora_salida.strftime('%H:%M') if fn.hora_salida else '',
+                    r['entrada'].strftime('%H:%M:%S') if r['entrada'] else '',
+                    r['inicio_almuerzo'].strftime('%H:%M:%S') if r['inicio_almuerzo'] else '',
+                    r['fin_almuerzo'].strftime('%H:%M:%S') if r['fin_almuerzo'] else '',
+                    r['salida'].strftime('%H:%M:%S') if r['salida'] else '',
+                    'Si' if e['retardo'] else 'No',
+                    'Si' if e['salida_anticipada'] else 'No',
+                    'Si' if e['ausente'] else 'No',
+                    f"{e['horas_trabajadas']:.2f}" if e['horas_trabajadas'] is not None else '',
+                ])
+
+        response = StreamingHttpResponse(filas(), content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{nombre_archivo}_{fecha_inicio}_{fecha_fin}.csv"'
+        )
+        return response
+
+
+class KioskoView(CtrlHorariosAccessMixin, generic.TemplateView):
+    """Pantalla fullscreen para fichar entrada/salida con lector de código de barras USB."""
+    template_name = 'generales/kiosko.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['anor'] = date.today().year
+        return ctx
+
+
+class KioskoRegistrarView(CtrlHorariosAccessMixin, View):
+    """Recibe la cédula leída por el escáner USB y crea el evento que corresponda.
+
+    Lógica de tipo de evento (state machine simple por día):
+    - sin eventos -> ENTRADA
+    - solo ENTRADA -> INICIO_ALMUERZO
+    - ENTRADA + INICIO_ALMUERZO -> FIN_ALMUERZO
+    - ENTRADA + INICIO + FIN -> SALIDA
+    - ya hay SALIDA -> nueva ENTRADA (segundo turno) -- pero responde "ya cerró jornada"
+
+    Debounce: si la última lectura de la misma cédula fue hace < 5s, rechaza.
+    """
+
+    DEBOUNCE_SEGUNDOS = 5
+
+    def post(self, request):
+        cedula = (request.POST.get('cedula') or '').strip()
+        if not cedula:
+            return JsonResponse({'ok': False, 'error': 'Cédula vacía'}, status=400)
+
+        # Permitir códigos con prefijos o caracteres no numéricos -- nos quedamos con los dígitos.
+        cedula_limpia = ''.join(ch for ch in cedula if ch.isdigit())
+        if not cedula_limpia:
+            return JsonResponse({'ok': False, 'error': 'Código inválido', 'codigo': cedula}, status=400)
+
+        try:
+            funcionario = Funcionarios.objects.select_related('sede').get(cedula=cedula_limpia)
+        except Funcionarios.DoesNotExist:
+            return JsonResponse({
+                'ok': False,
+                'error': 'Cédula no registrada',
+                'codigo': cedula_limpia,
+            }, status=404)
+
+        ahora = datetime.now()
+        hoy = ahora.date()
+        eventos_hoy = list(io_funcionarios.eventos_del_dia(funcionario, hoy))
+
+        if eventos_hoy:
+            ultimo = eventos_hoy[-1]
+            dt_ultimo = datetime.combine(hoy, ultimo.hora)
+            if (ahora - dt_ultimo).total_seconds() < self.DEBOUNCE_SEGUNDOS:
+                return JsonResponse({
+                    'ok': False,
+                    'error': 'Lectura duplicada, espere unos segundos',
+                    'funcionario': str(funcionario),
+                }, status=429)
+
+        tipos_registrados = {e.tipo_evento for e in eventos_hoy}
+        if io_funcionarios.EVENTO_ENTRADA not in tipos_registrados:
+            tipo = io_funcionarios.EVENTO_ENTRADA
+        elif io_funcionarios.EVENTO_INICIO_ALMUERZO not in tipos_registrados:
+            tipo = io_funcionarios.EVENTO_INICIO_ALMUERZO
+        elif io_funcionarios.EVENTO_FIN_ALMUERZO not in tipos_registrados:
+            tipo = io_funcionarios.EVENTO_FIN_ALMUERZO
+        elif io_funcionarios.EVENTO_SALIDA not in tipos_registrados:
+            tipo = io_funcionarios.EVENTO_SALIDA
+        else:
+            tipo = io_funcionarios.EVENTO_OTRO
+
+        evento = io_funcionarios.objects.create(
+            funcionario=funcionario,
+            fecha=hoy,
+            hora=ahora.time(),
+            tipo_evento=tipo,
+        )
+
+        foto_url = ''
+        try:
+            if funcionario.foto and hasattr(funcionario.foto, 'url'):
+                foto_url = funcionario.foto.url
+        except Exception:
+            foto_url = ''
+
+        return JsonResponse({
+            'ok': True,
+            'funcionario': {
+                'id': funcionario.id,
+                'nombre': f"{funcionario.nombre1} {funcionario.nombre2 or ''} {funcionario.apellido1} {funcionario.apellido2 or ''}".strip(),
+                'cedula': funcionario.cedula,
+                'sede': funcionario.sede.nombre_sede if funcionario.sede_id else '',
+                'foto': foto_url,
+            },
+            'evento': {
+                'tipo': tipo,
+                'tipo_display': evento.get_tipo_evento_display(),
+                'fecha': hoy.strftime('%Y-%m-%d'),
+                'hora': ahora.strftime('%H:%M:%S'),
+            },
+        })
 
 class OcupacionalView(LoginRequiredMixin, generic.TemplateView):
     template_name='generales/ocupacional.html'

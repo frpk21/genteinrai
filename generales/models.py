@@ -1,7 +1,7 @@
 import os
 from django.db import models
 from django.template.defaultfilters import slugify
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 from datetime import datetime
 from django.contrib.auth.models import User
@@ -32,7 +32,7 @@ class Sedes(ClaseModelo):
     ano_fundacion = models.IntegerField(default=0, null=True, blank=True)
     direccion = models.CharField(blank=True, null=True, max_length=100, default="")
     logo = models.FileField("Logo (476x570)", upload_to="fotos/", blank=False, null=False, default="")
-    descripcion = RichTextField(max_length=15000, blank=True, null=True)
+    descripcion = CKEditor5Field(max_length=15000, blank=True, null=True)
 
     def __str__(self):
         return '{}-{}'.format(self.id, self.nombre_sede)
@@ -109,20 +109,121 @@ class Funcionarios(models.Model):
     class Meta:
         verbose_name_plural = "Funcionarios"
 
+
+# Refactor: Control eficiente de eventos de asistencia
 class io_funcionarios(models.Model):
-    funcionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, default=0, null=False, blank=False)
-    fecha = models.DateField('Fecha de nacimiento', blank=False, null=False)
-    hora = models.TimeField(blank=True, null=False)
-    CHOICES = ((0,'Entra'),(1,'Sale'))
-    tipo_evento = models.IntegerField(choices=CHOICES, default=0, null=False, blank=False)
+    EVENTO_ENTRADA = 0
+    EVENTO_SALIDA = 1
+    EVENTO_INICIO_ALMUERZO = 2
+    EVENTO_FIN_ALMUERZO = 3
+    EVENTO_OTRO = 4
+    EVENTO_CHOICES = (
+        (EVENTO_ENTRADA, 'Entrada'),
+        (EVENTO_SALIDA, 'Salida'),
+        (EVENTO_INICIO_ALMUERZO, 'Inicio Almuerzo'),
+        (EVENTO_FIN_ALMUERZO, 'Fin Almuerzo'),
+        (EVENTO_OTRO, 'Otro'),
+    )
+    funcionario = models.ForeignKey(Funcionarios, on_delete=models.CASCADE, null=False, blank=False)
+    fecha = models.DateField('Fecha', blank=False, null=False)
+    hora = models.TimeField('Hora', blank=False, null=False)
+    tipo_evento = models.IntegerField(choices=EVENTO_CHOICES, default=EVENTO_ENTRADA, null=False, blank=False)
 
     class Meta:
-        verbose_name_plural = "IO Funcionarios"
+        verbose_name_plural = "Eventos de Asistencia"
+        ordering = ['fecha', 'hora']
+
+    def __str__(self):
+        return f"{self.funcionario} - {self.get_tipo_evento_display()} - {self.fecha} {self.hora}"
+
+    @staticmethod
+    def eventos_del_dia(funcionario, fecha):
+        return io_funcionarios.objects.filter(funcionario=funcionario, fecha=fecha).order_by('hora')
+
+    @staticmethod
+    def resumen_jornada(funcionario, fecha):
+        eventos = list(io_funcionarios.eventos_del_dia(funcionario, fecha))
+        resumen = {
+            'entrada': None,
+            'salida': None,
+            'inicio_almuerzo': None,
+            'fin_almuerzo': None,
+            'otros': [],
+        }
+        for e in eventos:
+            if e.tipo_evento == io_funcionarios.EVENTO_ENTRADA:
+                resumen['entrada'] = e.hora
+            elif e.tipo_evento == io_funcionarios.EVENTO_SALIDA:
+                resumen['salida'] = e.hora
+            elif e.tipo_evento == io_funcionarios.EVENTO_INICIO_ALMUERZO:
+                resumen['inicio_almuerzo'] = e.hora
+            elif e.tipo_evento == io_funcionarios.EVENTO_FIN_ALMUERZO:
+                resumen['fin_almuerzo'] = e.hora
+            else:
+                resumen['otros'].append(e.hora)
+        return resumen
+
+    @staticmethod
+    def calcular_estado_asistencia(funcionario, fecha):
+        """Resumen del cumplimiento de jornada para un funcionario en una fecha.
+
+        Devuelve un dict con:
+            presente, retardo, salida_anticipada, ausente,
+            horas_trabajadas (neto, descontando almuerzo si está registrado),
+            minutos_retardo, minutos_salida_anticipada.
+        """
+        from datetime import datetime as _dt, timedelta as _td
+
+        jornada = io_funcionarios.resumen_jornada(funcionario, fecha)
+        estado = {
+            'presente': bool(jornada['entrada'] and jornada['salida']),
+            'retardo': False,
+            'salida_anticipada': False,
+            'ausente': False,
+            'horas_trabajadas': None,
+            'minutos_retardo': 0,
+            'minutos_salida_anticipada': 0,
+        }
+
+        if not jornada['entrada'] and not jornada['salida']:
+            estado['ausente'] = True
+            return estado
+
+        if jornada['entrada'] and funcionario.hora_entrada and jornada['entrada'] > funcionario.hora_entrada:
+            estado['retardo'] = True
+            dt_esp = _dt.combine(fecha, funcionario.hora_entrada)
+            dt_real = _dt.combine(fecha, jornada['entrada'])
+            estado['minutos_retardo'] = int((dt_real - dt_esp).total_seconds() // 60)
+
+        if jornada['salida'] and funcionario.hora_salida and jornada['salida'] < funcionario.hora_salida:
+            estado['salida_anticipada'] = True
+            dt_esp = _dt.combine(fecha, funcionario.hora_salida)
+            dt_real = _dt.combine(fecha, jornada['salida'])
+            estado['minutos_salida_anticipada'] = int((dt_esp - dt_real).total_seconds() // 60)
+
+        if jornada['entrada'] and jornada['salida']:
+            dt_entrada = _dt.combine(fecha, jornada['entrada'])
+            dt_salida = _dt.combine(fecha, jornada['salida'])
+            if dt_salida < dt_entrada:
+                # Caso turno que cruza medianoche: sumar un día a la salida.
+                dt_salida += _td(days=1)
+            delta = dt_salida - dt_entrada
+
+            # Descontar almuerzo si ambos extremos están registrados.
+            if jornada['inicio_almuerzo'] and jornada['fin_almuerzo']:
+                dt_ini_alm = _dt.combine(fecha, jornada['inicio_almuerzo'])
+                dt_fin_alm = _dt.combine(fecha, jornada['fin_almuerzo'])
+                if dt_fin_alm > dt_ini_alm:
+                    delta -= (dt_fin_alm - dt_ini_alm)
+
+            estado['horas_trabajadas'] = round(delta.total_seconds() / 3600.0, 2)
+
+        return estado
 
 class Noticias(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
     subtitulo = models.CharField(blank=False, null=False, max_length=500)
-    descripcion = RichTextField(max_length=15000, blank=True, null=True)
+    descripcion = CKEditor5Field(max_length=15000, blank=True, null=True)
     archivo_audio = models.FileField("Archivo Audio", upload_to="audio/", blank=True, null=True, default='')
     urlvideo = models.CharField('URL Youtube', blank=True, null=True, default='', max_length=200)
     ultima_hora = models.BooleanField()
@@ -162,12 +263,12 @@ class Suscribir(ClaseModelo):
 
 
 class Miempresa(models.Model):
-    nuestra_empresa = RichTextField("Nuestra Empresa", max_length=15000, blank=True, null=True)
-    mision = RichTextField("Mision", max_length=15000, blank=True, null=True)
-    vision = RichTextField("Vision", max_length=15000, blank=True, null=True)
-    objetivo = RichTextField("Objetivo General", max_length=15000, blank=True, null=True)
-    principios = RichTextField("Principios y Fundamentos", max_length=15000, blank=True, null=True)
-    himno_letra = RichTextField("Letra Himno Sistema INRAI", max_length=15000, blank=True, null=True)
+    nuestra_empresa = CKEditor5Field("Nuestra Empresa", max_length=15000, blank=True, null=True)
+    mision = CKEditor5Field("Mision", max_length=15000, blank=True, null=True)
+    vision = CKEditor5Field("Vision", max_length=15000, blank=True, null=True)
+    objetivo = CKEditor5Field("Objetivo General", max_length=15000, blank=True, null=True)
+    principios = CKEditor5Field("Principios y Fundamentos", max_length=15000, blank=True, null=True)
+    himno_letra = CKEditor5Field("Letra Himno Sistema INRAI", max_length=15000, blank=True, null=True)
     himno_audio = models.FileField("Archivo Audio Himno Sistema INRAI", upload_to="audio/", blank=True, null=True, default='')
  
     def __str__(self):
@@ -177,10 +278,10 @@ class Miempresa(models.Model):
         verbose_name_plural = "Nuestra Empresa"
 
 class Home1(models.Model):
-    nuestra_empresa = RichTextField("Nuestra Empresa", max_length=3000, blank=True, null=True)
-    comunicaciones = RichTextField("Comunicaciones", max_length=3000, blank=True, null=True)
-    marketing = RichTextField("Marketing", max_length=3000, blank=True, null=True)
-    entretenimiento = RichTextField("Entretenimiento", max_length=3000, blank=True, null=True)
+    nuestra_empresa = CKEditor5Field("Nuestra Empresa", max_length=3000, blank=True, null=True)
+    comunicaciones = CKEditor5Field("Comunicaciones", max_length=3000, blank=True, null=True)
+    marketing = CKEditor5Field("Marketing", max_length=3000, blank=True, null=True)
+    entretenimiento = CKEditor5Field("Entretenimiento", max_length=3000, blank=True, null=True)
    
     def __str__(self):
         return '{}'.format(self.id)
@@ -190,7 +291,7 @@ class Home1(models.Model):
 
 class Bienestar(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
-    detalle = RichTextField("Detalle", max_length=15000, blank=True, null=True)
+    detalle = CKEditor5Field("Detalle", max_length=15000, blank=True, null=True)
     foto = models.FileField("Foto (417 x 269px)", upload_to="fotos/", blank=True, null=True, default='')
     CHOICES = (('news','Noticias'),('event','Eventos'),('insp','Medio Ambiente'))
     tipo = models.CharField(choices=CHOICES, max_length=5, default='news', blank=False, null=False)
@@ -242,7 +343,7 @@ class Tutoriales(ClaseModelo):
 
 class Ocupacional(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
-    detalle = RichTextField("Detalle", max_length=15000, blank=True, null=True)
+    detalle = CKEditor5Field("Detalle", max_length=15000, blank=True, null=True)
     foto = models.FileField("Foto (417 x 269px)", upload_to="fotos/", blank=True, null=True, default='')
  
     def __str__(self):
@@ -258,7 +359,7 @@ class Ocupacional(ClaseModelo):
 
 class Elmuro(ClaseModelo):
     titulo = models.CharField(blank=False, null=False, max_length=200)
-    detalle = RichTextField("Detalle", max_length=5000, blank=True, null=True)
+    detalle = CKEditor5Field("Detalle", max_length=5000, blank=True, null=True)
     foto = models.FileField("Foto (417 x 269px)", upload_to="elmuro/", blank=True, null=True, default='')
     autor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,default='')
  
@@ -274,7 +375,7 @@ class Elmuro(ClaseModelo):
 
 
 class Reglamento(models.Model):
-    reglamento = RichTextField("Reglamento Interno de Trabajo", max_length=200000, blank=True, null=True)
+    reglamento = CKEditor5Field("Reglamento Interno de Trabajo", max_length=200000, blank=True, null=True)
     sede = models.ForeignKey(Sedes, on_delete=models.CASCADE, default=1, null=False, blank=False)
 
     def __str__(self):
@@ -282,191 +383,3 @@ class Reglamento(models.Model):
 
     class Meta:
         verbose_name_plural = "Reglamento"
-
-def reporte_diario(request):
-        import io
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle
-        from reportlab.lib.enums import TA_LEFT, TA_CENTER
-        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-        from reportlab.lib import colors  
-        from reportlab.lib.pagesizes import letter, landscape
-        from reportlab.platypus import Table
-        from reportlab.lib.units import inch
-        from reportlab.platypus import Image, Paragraph, Spacer
-        from django.core.mail import EmailMessage
-        from django.http import HttpResponse
-
-        response = HttpResponse(content_type='application/pdf')  
-        buffer = io.BytesIO()
-        ordenes = []
-        logo = "static/base/img/inrai/logo-inrai-300px.png"
-        texto = "static/base/img/inrai/logo-inrai-300px.png"
-        image = Image(logo, 3 * inch, 1.2 * inch)
-        image.hAlign = "LEFT"
-        image1 = Image(texto, 2 * inch, 0.5 * inch)
-        image1.hAlign = "LEFT"
-        styles = getSampleStyleSheet()
-        styles.add(ParagraphStyle(name='Normal_CENTER', alignment=TA_CENTER))
-        styles.add(ParagraphStyle(name='obs_imp', alignment=TA_LEFT,fontSize=10 ))
-        styles.add(ParagraphStyle(name='Pie',
-                            alignment=TA_CENTER,
-                            fontName='Helvetica',
-                            fontSize=14,
-                            textColor=colors.darkgray,
-                            leading=8,
-                            textTransform='uppercase',
-                            wordWrap='LTR',
-                            splitLongWords=True,
-                            spaceShrinkage=0.05,
-                            ))
-        styles.add(ParagraphStyle(name='link',
-                            alignment=TA_CENTER,
-                            fontName='Helvetica',
-                            fontSize=12,
-                            textColor=colors.blue,
-                            leading=8,
-                            textTransform='lowercase',
-                            wordWrap='LTR',
-                            splitLongWords=False,
-                            spaceShrinkage=0,
-                            #backColor=colors.cyan,
-                            ))
-        styles.add(ParagraphStyle(name='confirma',
-                            alignment=TA_CENTER,
-                            fontName='Helvetica',
-                            fontSize=10,
-                            textColor=colors.red,
-                            leading=8,
-                            #textTransform='lowercase',
-                            wordWrap='LTR',
-                            splitLongWords=False,
-                            spaceAfter=3,
-                            spaceBefore=3,
-                            spaceShrinkage=0,
-                            backColor=colors.yellow,
-                            ))
-        styles.add(ParagraphStyle(name='ejemplo',
-                            parent=styles['Normal'],
-                            fontName='Helvetica',
-                            wordWrap='LTR',
-                            alignment=TA_LEFT,
-                            fontSize=12,
-                            leading=13,
-                            textColor=colors.red,
-                            borderPadding=0,
-                            leftIndent=0,
-                            backcolor=colors.yellow,
-                            rightIndent=0,
-                            spaceAfter=0,
-                            spaceBefore=0,
-                            splitLongWords=True,
-                            spaceShrinkage=0.05,
-                            ))
-        styles.add(ParagraphStyle(name='ejemplo1',
-                            parent=styles['Normal'],
-                            fontName='Helvetica',
-                            wordWrap='LTR',
-                            alignment=TA_CENTER,
-                            fontSize=12,
-                            leading=13,
-                            textColor=colors.red,
-                            borderPadding=1,
-                            leftIndent=0,
-                            backcolor=colors.yellow,
-                            rightIndent=0,
-                            spaceAfter=0,
-                            spaceBefore=2,
-                            splitLongWords=True,
-                            spaceShrinkage=0.05,
-                            ))
-        tit="         Rad-No. "
-        filename = "Reporte_horarios.pdf"
-        
-        t=Table(
-            data=[
-                [image1,'','',''],
-                ['','','',''],
-                ['REPORTE HORARIOS DE PERSONAL','','',''],
-                ['','','',''],
-                ['FECHA', '',(date.today()-1).strftime('%d/%m/%Y')+tit,'',''],
-                ['', '','',''],
-                ['', '','',''],
-                ['', '','',''],
-                ['', '','',''],
-                ['', '','','']
-            ],
-            colWidths=[70,20,350,200],
-            style=[
-                    ("FONT", (0,0), (0,2), "Helvetica-Bold", 15, 15,colors.grey),
-                    ("FONT", (1,0), (5,1), "Helvetica", 7, 7,colors.grey),
-                    ("FONT", (1,2), (2,-1), "Helvetica-Bold", 11, 11),
-                ]
-            )
-        
-        t.hAlign = "LEFT"
-        ordenes.append(t)
-        ordenes.append(Spacer(1, 5))
-        try:
-            nube=self.open_db_cloud()
-            cursor_nube=nube.cursor()
-            try:
-                cursor_nube.execute("SELECT * FROM generales_sedes")
-                sedes = namedtuplefetchall(cursor_nube)
-                for n, x in enumerate(sedes):
-                    sql="SELECT generales_funcionarios.nombre1 as n1, generales_funcionarios.nombre2 as n2, generales_funcionarios.apellido1 as a1, generales_funcionarios.apellido2 as a2, generales_funcionarios.hora_entrada as h1, generales_funcionarios.hora_salida as h2"
-                    sql = sql + " generales_io_funcionarios.fecha, generales_io_funcionarios.hora, generales_io_funcionarios.tipo_evento"
-                    sql = sql + " FROM generales_io_funcionarios LEFT JOIN generales_funcionarios on generales_io_funcionarios.id=funcionarios.id where generales_funcionarios.sede_id="+str(x.id).strip()+" AND fecha=(current_date-1)"
-                    cursor_nube.execute(sql)
-                    resul = namedtuplefetchall(cursor_nube)
-                    if resul:
-                        for i,p in enumerate(resul):
-                            ordenes0= [(p.n1 + p.n2 + p.a1 + p.a2,
-                                        p.feha_entrada+" - "+p.fecha_salida,
-                                        p.fecha,
-                                        p.hora,
-                                        p.tipo_evento)]
-                        headings0 = ('Funcionario', 'Horario', 'Fecha', 'Hora', 'Evento')
-                        col = 5
-            except psycopg2.Error as e:
-                self.lbl_error.setText("ERROR DE CONEXION SERVIDOR VIRTUAL: "+str(e))
-                self.lbl_error.show()
-            cursor_nube.close()
-            nube.close()
-        except psycopg2.Error as e:
-            self.lbl_error.setText("SERVIDOR VIRTUAL: "+datetime.now().strftime('%d/%m/%Y %H:%M')+" *** ERROR DE CONEXION SV EN LA NUBE *** "+str(e))
-            self.lbl_error.show()                
-            t0 = Table([headings0] + ordenes0)
-            t0.setStyle(TableStyle(
-                [  
-                    ('GRID', (0, 0), (col, -1), 1, colors.darkgray),  
-                    #('LINEBELOW', (0, 0), (-1, 0), 2, colors.gray),
-                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                    ('ALIGN',(0,1),(col,1),'CENTRE'),
-                    ('BACKGROUND', (0, 0), (col,0), colors.gray)  
-                ]  
-            ))
-            t0.hAlign = "LEFT"
-            ordenes.append(t0)
-        ordenes.append(Spacer(10, 15))
-        pie = Paragraph("inrai.net", styles['Pie'])
-        pie.hAlign = "CENTER"
-        ordenes.append(pie)
-        icon = "static/base/img/inrai/favicon.png"
-        
-        doc = SimpleDocTemplate(buffer,
-                    pagesize=landscape(letter),
-                    rightMargin=40,
-                    leftMargin=50,
-                    topMargin=20,  
-                    bottomMargin=8,
-                    author="INRAI",
-                    title="REPORTE DE HORARIOS DEL PERSONAL",
-                    icon=icon,
-                    )
-        
-        doc.build(ordenes)
-        response.write(buffer.getvalue())
-        pdf = buffer.getvalue()
-        buffer.close()
-
-        return response

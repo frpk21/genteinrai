@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from decouple import Csv, config
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,13 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's5rh4y@9n(%1(x$%h@#2mxx^!5g%!is1fhg)92^^ynmw@_d4=f'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+# Lee de .env (local) o de variables de entorno (producción). Los defaults
+# permiten seguir arrancando sin .env (los valores reales viven en settings_local.py en prod).
+SECRET_KEY = config('SECRET_KEY', default='change-me-in-env-or-settings-local')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 
 # Application definition
@@ -38,19 +38,53 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'django_filters',
     'generales',
-    'ckeditor',
-    'multiselectfield',
-    'tempus_dominus',
+    'django_ckeditor_5',
 ]
 
-# Ckeditor
-CKEDITOR_CONFIGS = {
+# CKEditor 5
+CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': None,
-    }
+        'toolbar': [
+            'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+            'blockQuote', '|', 'undo', 'redo',
+        ],
+    },
+    'extends': {
+        'toolbar': [
+            'heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'underline',
+            'strikethrough', 'link', '|', 'bulletedList', 'numberedList', 'todoList', '|',
+            'blockQuote', 'codeBlock', 'horizontalLine', '|', 'insertImage', 'mediaEmbed',
+            'insertTable', '|', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+            'highlight', '|', 'sourceEditing', 'removeFormat', 'undo', 'redo',
+        ],
+        'image': {
+            'toolbar': [
+                'imageTextAlternative', '|',
+                'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter',
+            ],
+            'styles': ['alignLeft', 'alignRight', 'alignCenter', 'full', 'side'],
+        },
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'],
+        },
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'},
+            ],
+        },
+        'htmlSupport': {
+            'allow': [
+                {'name': '/.*/', 'attributes': True, 'classes': True, 'styles': True},
+            ],
+        },
+    },
 }
+CKEDITOR_5_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg', 'pdf', 'png', 'jpg', 'gif', 'webp']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,15 +126,14 @@ WSGI_APPLICATION = 'genteinrai.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'genteinrai',
-        'USER': 'doadmin',
-        'PASSWORD': 'c56n9esmnqxbquvo',
-        'HOST': 'magazin-do-user-1934793-0.db.ondigitalocean.com',
-        'PORT': '25060',
-        #'SSL': 'requiere',
-        'CONN_MAX_AGE': None
-       }
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql_psycopg2'),
+        'NAME': config('DB_NAME', default='genteinrai'),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+        'CONN_MAX_AGE': None,
+    }
 }
 
 
@@ -129,8 +162,6 @@ TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 USE_THOUSAND_SEPARATOR = False
@@ -149,11 +180,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = "recursoshumanos@sistemainrai.net"
-EMAIL_HOST_PASSWORD = "inrai2022."
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+# --- Sesiones ---
+# Kiosko: mantener viva la sesión del operador mientras la pestaña esté abierta.
+SESSION_COOKIE_AGE = config('SESSION_COOKIE_AGE', default=60 * 60 * 24 * 14, cast=int)
+SESSION_SAVE_EVERY_REQUEST = config('SESSION_SAVE_EVERY_REQUEST', default=False, cast=bool)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = config('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=False, cast=bool)
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -164,7 +201,9 @@ LOGIN_REDIRECT_URL = '/'
 # cuando el usuario salga (logout), el programa lo manda al login.html
 LOGOUT_REDIRECT_URL = '/login/'
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-try:
-    exec(open(os.path.join(BASE_DIR, 'genteinrai/settings_local.py')).read())
-except IOError:
-    raise Exception('error reading local settings')
+# settings_local.py es opcional. En producción existe y sobreescribe valores
+# (DB, SECRET_KEY, etc.). En desarrollo local se usa el .env vía python-decouple.
+_local_settings_path = os.path.join(BASE_DIR, 'genteinrai/settings_local.py')
+if os.path.exists(_local_settings_path):
+    with open(_local_settings_path) as _f:
+        exec(_f.read())
